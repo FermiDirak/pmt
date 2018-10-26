@@ -59,6 +59,10 @@ lists all `features` that the user can pick to switch to. If a regex is provided
 
 All staged changes are stashed before switching to the other feature. Switching to a feature with stashed changes will automatically unstash all changes.
 
+### mpr
+
+Makes a pull request for the given feature.
+
 ##More to come in the near future!
 
 ___
