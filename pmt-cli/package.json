@@ -1,0 +1,29 @@
+{
+  "name": "pmt-cli",
+  "version": "1.0.0",
+  "description": "The ultimate git workflow management tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FermiDirak/pmt.git"
+  },
+  "keywords": [
+    "git",
+    "pmt",
+    "love",
+    "swank",
+    "thirst"
+  ],
+  "author": "FermiDirak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FermiDirak/pmt/issues"
+  },
+  "homepage": "https://github.com/FermiDirak/pmt#readme",
+  "dependencies": {
+    "commander": "^2.19.0"
+  }
+}
