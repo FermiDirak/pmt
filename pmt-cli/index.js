@@ -67,12 +67,20 @@ program
   .action((env, file, options) => {
     const {new: task_descriptor} = options;
 
-    console.log(options);
-
     prettyDebug.printCommand("commit", `${env} ${file}`, ['-n', task_descriptor]);
 
     process.exit(0);
   });
 
+// MPR
+
+program
+  .command('log')
+  .description('logs your commit history')
+  .action(() => {
+    prettyDebug.printCommand("log");
+
+    process.exit(0);
+  });
 
 program.parse(process.argv);
