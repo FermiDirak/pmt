@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/FermiDirak/pmt#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "commander": "^2.19.0"
   }
 }
