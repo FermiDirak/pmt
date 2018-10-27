@@ -13,55 +13,47 @@
 
 ## Commands
 
-### create feature [ticket_id] [descriptor]
+### story <ticket_id> [descriptor]
 
-Creates a `feature` with a given `identifier` and `descriptor` and likewise creates it on `origin`.
+Creates a `story` with a given `identifier` and `descriptor` and likewise creates the `story` on `origin`.
 
-Behind the scenes, `create` creates a branch named after the unique identifier. It then pushes the branch to origin and sets upstream to the newly pushed branch.
+Behind the scenes, `create` creates a branch named after the unique identifier. An identifier could be a ticket id or a short unique identifier. The branch is likewise created on `origin` and sets upstream locally to the origin branch.
 
-### checkout [branch_descriptor_regex _(optional)_]
+### sub | task | subtask <"subtask_descriptor">
 
-`Checkout` will list all open `features` on your machine, as well as the `master` branch [1]. `Checkout` will then ask you to select one of the `features` to check into. Checking out will stash all unsaved changes and immediately check you into the given `feature`.
+Creates a `subtask` with a given descriptor and an assigns a numberical incremental id to the `subtask`.
 
-[1] If a regex is provided, it will only display branches that match the regex. If a regex perfectly matches, then the matching `feature` will automatically be checked into.
+Behind the scenes, this creates an empty commit with the descriptor as the message. Commits are chained in the chronological order in which their associated tasks are created. Changes to a `subtask` change the associated commit. This effectively decouples commits and time / order, and allows us to have more meaningful commits w/ meaningful commit messages in your commit logs.
 
-Behind the scenes, `checkout` works via Git branching. Each feature is a Git branch, and checking out into a `feature` simply checks into that `feature`'s branch. Before checkout takes place, all unstaged changes are stashed, and all saved changes are pushed to origin.
+### checkout [branch_descriptor_regex]
 
-A user should be able to switch between features without having to worry about saving progress or losing mental flow.
+`Checkout` will list all open `stories` on your machine, as well as `master`. If a regex is provided, `checkout` will only display `stories` that match the regex. `Checkout` will then ask you to select one of the listed `stories` to check into, or automatically check you in if a regex is given and filters down to a singular `story`. Checking out will stash all unsaved changes and immediately check you into the selected `story`.
 
-### create task "task_descriptor"
+Behind the scenes, `checkout` works via Git branching. Each `story` is a Git branch, and checking out into a `story` simply checks into that `story`'s branch. Before checkout takes place, all unstaged changes are stashed, and all saved changes are pushed to origin.
 
-Creates a task with a given descriptor and an assigns a numberical incremental id to the task.
+A user should be able to switch between `stories` without having to worry about saving progress or losing mental flow.
 
-Behind the scenes, this creates an empty commit with the descriptor as the message. Commits are chained in the chronological order in which their associated tasks are created. Changes to a task change the associated commit. This effectively decouples commits and time / order, and allows us to have more meaningful commits w/ meaningful commit messages.
+### diff [task_id] [-a --all]
 
-### ls
-
-Lists the tasks for the currently checked in `feature`. Self explanitory. Lul!
-
-### diff [task_id]
-
-Lists all the changes made in a given `task`. If no `task_id` is provided, then diff lists all unstaged changes. If a -a parameter is appended, diff lists all changes on the current `feature`.
+Lists all the changes made in a given `task`. If no `task_id` is provided, then diff lists all the tasks which can be selected to display individual `task` diffs. If a -a parameter is appended, `diff` lists all changes on the current `task`.
 
 Behind the scenes, diff shows all the changes made on the given commit associated with the `task_id`.
 
 ### add ...files
 
-A literal alias to `git add`. Nothing special here.
+A literal alias to `git add`.
 
-### commit [task_id (optional)] ...files
+Note by the author: Staging is a critical concept for effective context switching. Abstracting away staging would not be productive for feature workflow.
 
-If a `task_id` is provided, then staged changes made are committed to the given task. Otherwise, a list of tasks is provided that the user can pick to commit the staged changes to.
+### commit [task_id (optional)] ...files [-n "task_descriptor"]
 
-### switch [feature_name_regex]
-
-lists all `features` that the user can pick to switch to. If a regex is provided, the list is filtered by the regex and if a match exists, then pmt switchs to the given `feature` directly.
-
-All staged changes are stashed before switching to the other feature. Switching to a feature with stashed changes will automatically unstash all changes.
+If a `task_id` is provided, then staged changes made are added to the given `task`. If a `-n` optional is provided, then a new `task` is created with the given "task_descriptor" and changes are added to the new `task`. Otherwise, a list of `tasks` are provided that the user can pick to add the staged changes to.
 
 ### mpr
 
 Makes a pull request for the given feature.
+
+Note by the author: this should either be configured to run a user provided script, or work directly with various Version Control vendors such as Git or BitBucket.
 
 ##More to come in the near future!
 
@@ -69,4 +61,4 @@ ___
 
 ## Additional Notes
 
-Interestingly, once a feature is merged to master, every commit appended to master is effectively final and should not be mutated in any way.
+Once a feature is merged to master, every commit appended to master is effectively final and should not be mutated in any way.
