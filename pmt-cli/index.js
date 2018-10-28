@@ -80,6 +80,8 @@ program
   .action(() => {
     prettyDebug.printCommand("log");
 
+
+
     process.exit(0);
   });
 
