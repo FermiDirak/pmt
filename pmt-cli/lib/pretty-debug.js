@@ -19,6 +19,14 @@ const printCommand = (command, param, ...options) => {
   );
 }
 
+/** prints out an error message in a formatted way
+ * @param errorMessage The error mesage to prettify
+ */
+const printError = (errorMessage) => {
+  console.log(Chalk.red('Error: ') + errorMessage);
+}
+
 module.exports = {
   printCommand,
+  printError,
 };
