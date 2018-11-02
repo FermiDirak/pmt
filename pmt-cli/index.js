@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const prettyDebug = require('./lib/pretty-debug');
 const Git = require('nodegit');
+const prettyDebug = require('./lib/pretty-debug');
+
+const pmtLog = require('./lib/pmt-log');
 
 const currentDirectory = process.cwd();
 
@@ -83,23 +85,7 @@ program
   .action(() => {
     prettyDebug.printCommand("log");
 
-    Git.Repository.open(currentDirectory)
-      .then(repo => {
-        return repo.getMasterCommit();
-      })
-      .then(firstCommitOnMaster => {
-        let history = firstCommitOnMaster.history();
-
-        history.on('commit', commit => {
-          console.log('Commit ' + commit.sha());
-        });
-
-        history.start();
-      })
-      .catch(error => {
-        prettyDebug.printError(error);
-        process.exit(1);
-      });
+    pmtLog(currentDirectory);
 
     // process.exit(0);
   });
