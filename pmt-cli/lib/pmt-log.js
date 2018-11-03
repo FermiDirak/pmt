@@ -92,7 +92,7 @@ const pmtLog = (currentDirectory, options) => {
 
     const editor = process.env.editor || 'less';
 
-    q:spawn(editor, [tmpFileLocation], {
+    spawn(editor, [tmpFileLocation], {
       stdio: 'inherit',
     });
   }
