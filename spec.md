@@ -57,6 +57,6 @@ Note by the author: this should either be configured to run a user provided scri
 
 ### log
 
-Logs commit history on `master`. Updates master before being called.
+Logs commit history on the current branch.
 
 ##More to come in the near future!
