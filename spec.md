@@ -60,9 +60,3 @@ Note by the author: this should either be configured to run a user provided scri
 Logs commit history on `master`. Updates master before being called.
 
 ##More to come in the near future!
-
-___
-
-## Additional Notes
-
-Once a feature is merged to master, every commit appended to master is effectively final and should not be mutated in any way.

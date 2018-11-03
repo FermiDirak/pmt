@@ -1,5 +1,11 @@
+var fs = require('fs');
+const { spawn } = require('child_process');
+
 const Git = require('nodegit');
+const commitCount = require('git-commit-count');
 const chalk = require('chalk');
+
+const tmpFileLocation = '/tmp/pmt/log.out';
 
 /** leftpads content by a fixed value and culls left over values
  * @param string The string to left pad
@@ -41,8 +47,6 @@ const formatCommit = (commit) => {
     '',
   ].join('\n');
 
-  // message += commit.hash() + '\n';
-
   return message;
 }
 
@@ -52,7 +56,10 @@ const formatCommit = (commit) => {
  * @return Promise whether the transaction has  succeeded or failed
  */
 const pmtLog = (currentDirectory, options) => {
-  let logs = '';
+  let log = '';
+
+  const totalCommitCount = commitCount();
+  let count = 0;
 
   Git.Repository.open(currentDirectory)
   .then(repo => {
@@ -62,9 +69,13 @@ const pmtLog = (currentDirectory, options) => {
     let history = firstCommitOnMaster.history();
 
     history.on('commit', commit => {
-      logs += formatCommit(commit);
+      log += formatCommit(commit);
+      count += 1;
 
-      console.log(formatCommit(commit));
+      if (count === totalCommitCount) {
+        writeAndOpen();
+      }
+
     });
 
     history.start();
@@ -74,6 +85,17 @@ const pmtLog = (currentDirectory, options) => {
     process.exit(1);
   });
 
+  const writeAndOpen = () => {
+    fs.writeFileSync(tmpFileLocation, log, (error) => {
+      console.error(error);
+    });
+
+    const editor = process.env.editor || 'less';
+
+    q:spawn(editor, [tmpFileLocation], {
+      stdio: 'inherit',
+    });
+  }
 
 }
 
