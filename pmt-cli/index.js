@@ -5,6 +5,7 @@ const Git = require('nodegit');
 const prettyDebug = require('./lib/pretty-debug');
 
 const pmtLog = require('./lib/pmt-log');
+const pmtAdd = require('./lib/pmt-add');
 
 const currentDirectory = process.cwd();
 
@@ -59,8 +60,13 @@ program
 program
   .command('add')
   .description('an alias to `git add`')
+  .option('-a -A --all', 'specifies to add all unstaged files')
   .action(() => {
-    prettyDebug.printCommand("add", "...files");
+    const args = program.rawArgs.slice(3);
+
+    prettyDebug.printCommand("add", args);
+
+    pmtAdd(args);
 
     process.exit(0);
   });
@@ -85,9 +91,14 @@ program
   .action(() => {
     prettyDebug.printCommand("log");
 
-    pmtLog(currentDirectory);
-
-    // process.exit(0);
+    pmtLog(currentDirectory)
+      .then(() => {
+        process.exit(0);
+      })
+      .catch(() => {
+        prettyDebug.printError(error);
+        process.exit(1);
+      });
   });
 
 program.parse(process.argv);

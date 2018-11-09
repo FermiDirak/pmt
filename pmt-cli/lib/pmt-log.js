@@ -61,29 +61,26 @@ const pmtLog = (currentDirectory, options) => {
   const totalCommitCount = commitCount();
   let count = 0;
 
-  Git.Repository.open(currentDirectory)
-  .then(repo => {
-    return repo.getMasterCommit();
-  })
-  .then(firstCommitOnMaster => {
-    let history = firstCommitOnMaster.history();
+  return Git.Repository.open(currentDirectory)
+    .then(repo => {
+      return repo.getMasterCommit();
+    })
+    .then(firstCommitOnMaster => {
+      let history = firstCommitOnMaster.history();
 
-    history.on('commit', commit => {
-      log += formatCommit(commit);
-      count += 1;
+      history.on('commit', commit => {
+        log += formatCommit(commit);
+        count += 1;
 
-      if (count === totalCommitCount) {
-        writeAndOpen();
-      }
+        if (count === totalCommitCount) {
+          writeAndOpen();
+          return;
+        }
 
+      });
+
+      history.start();
     });
-
-    history.start();
-  })
-  .catch(error => {
-    prettyDebug.printError(error);
-    process.exit(1);
-  });
 
   const writeAndOpen = () => {
     fs.writeFileSync(tmpFileLocation, log, (error) => {
