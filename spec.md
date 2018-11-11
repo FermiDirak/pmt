@@ -19,7 +19,7 @@ Creates a `story` with a given `identifier` and `descriptor` and likewise create
 
 Behind the scenes, `create` creates a branch named after the unique identifier. An identifier could be a ticket id or a short unique identifier. The branch is likewise created on `origin` and sets upstream locally to the origin branch.
 
-### sub | task | subtask <subtask_descriptor>
+### task | sub | subtask <subtask_descriptor>
 
 Creates a `subtask` with a given descriptor and an assigns a numberical incremental id to the `subtask`.
 
