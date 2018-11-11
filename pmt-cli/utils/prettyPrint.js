@@ -5,7 +5,7 @@ const chalk = require('chalk');
  * @param param The param associated with the command
  * @param options The options being passed in with the command
  */
-const printCommand = (command, param, ...options) => {
+const command = (command, param, ...options) => {
   let formattedOptions = '';
 
   options.forEach(option => {
@@ -22,11 +22,11 @@ const printCommand = (command, param, ...options) => {
 /** prints out an error message in a formatted way
  * @param errorMessage The error mesage to prettify
  */
-const printError = (errorMessage) => {
+const error = (errorMessage) => {
   console.log(Chalk.red('Error: ') + errorMessage);
 }
 
 module.exports = {
-  printCommand,
-  printError,
+  command,
+  error,
 };
