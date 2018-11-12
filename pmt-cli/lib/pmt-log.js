@@ -73,7 +73,7 @@ const createLog = (history, writeStream) => new Promise((resolve) => {
 /** The logging function of PMT
  * @param options Other option arguments
  * @return Promise whether the transaction has  succeeded or failed */
-const pmtLog = (options) => {
+const pmtLog = () => {
   let tempFilePath = null;
   let writeStream = null;
 
