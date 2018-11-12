@@ -30,11 +30,17 @@ program
   .command('stories')
   .description('lists out open stories')
   .action(() => {
-    prettyPrint('stories', null);
+    prettyPrint.command('stories', null);
 
-    pmtStories();
+    pmtStories()
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((error) => {
+        prettyPrint.error(error);
 
-    process.exit(0);
+        process.exit(1);
+      });
   });
 
 program
