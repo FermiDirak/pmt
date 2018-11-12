@@ -1,8 +1,3 @@
-const { promisify } = require('util');
-
-const os = require('os');
-const path = require('path');
-const fs = require('fs');
 
 const Git = require('nodegit');
 const commitCount = require('git-commit-count');
@@ -13,8 +8,7 @@ const io = require('../utils/io');
 
 /** leftpads content by a fixed value and culls left over values
  * @param string The string to left pad
- * @param len The size of the area to fill
- */
+ * @param len The size of the area to fill */
 const leftPad = (string, len) => {
   if (string.length < len) {
     return Array(len - string.length).fill(' ').join('') + string;
@@ -26,8 +20,7 @@ const leftPad = (string, len) => {
 
 /** formats a commit in a human readable format
  * @param commit The commit to format
- * @return The formatted commit message
- */
+ * @return The formatted commit message */
 const formatCommit = (commit) => {
   let message = '';
 
@@ -56,8 +49,7 @@ const formatCommit = (commit) => {
 
 /** Creates the log
  * @param history {object} NodeGit commit history
- * @param writeStream {object} The writestream object
- */
+ * @param writeStream {object} The writestream object */
 const createLog = (history, writeStream) => new Promise((resolve) => {
   const totalCommitCount = commitCount();
   let count = 0;
@@ -70,18 +62,17 @@ const createLog = (history, writeStream) => new Promise((resolve) => {
 
     if (count === totalCommitCount) {
       writeStream.end();
+      resolve();
     }
   });
 
   history.start();
-  resolve();
 });
 
 
 /** The logging function of PMT
  * @param options Other option arguments
- * @return Promise whether the transaction has  succeeded or failed
- */
+ * @return Promise whether the transaction has  succeeded or failed */
 const pmtLog = (options) => {
   let tempFilePath = null;
   let writeStream = null;
