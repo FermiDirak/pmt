@@ -10,7 +10,7 @@ class Story {
   }
 
   addTask(task) {
-    if(this.includesTask(task)) {
+    if (this.includesTask(task)) {
       return;
     }
 
@@ -21,8 +21,10 @@ class Story {
    * @param task {Task} The task to look for
    * @return {boolean} whether the task is included or not */
   includesTask(task) {
-    //@TODO
+    // @TODO
 
     return true;
   }
 }
+
+module.exports = Story;
