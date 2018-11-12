@@ -94,12 +94,7 @@ program
   .action(() => {
     prettyPrint.command('log');
 
-    // @TODO: add optional parameters
-
     pmtLog()
-      .then(() => {
-        process.exit(0);
-      })
       .catch((error) => {
         prettyPrint.error(error);
         process.exit(1);

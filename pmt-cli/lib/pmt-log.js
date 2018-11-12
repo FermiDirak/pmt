@@ -4,87 +4,23 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs');
 
-const mkdtemp = promisify(fs.mkdtemp);
-const writeFile = promisify(fs.writeFile);
-
-const { spawn } = require('child_process');
-
 const Git = require('nodegit');
 const commitCount = require('git-commit-count');
 const chalk = require('chalk');
 
 const io = require('../utils/io');
 
-/** The logging function of PMT
- * @param options Other option arguments
- * @return Promise whether the transaction has  succeeded or failed
+
+/** leftpads content by a fixed value and culls left over values
+ * @param string The string to left pad
+ * @param len The size of the area to fill
  */
-const pmtLog = (options) => {
-  const totalCommitCount = commitCount();
-  const count = 0;
+const leftPad = (string, len) => {
+  if (string.length < len) {
+    return Array(len - string.length).fill(' ').join('') + string;
+  }
 
-  let tempFilePath = null;
-
-  return io.makeTempFile('pmt', 'logs')
-    .then((_tempFilePath) => {
-      tempFilePath = _tempFilePath;
-    })
-    .then(() => io.getGitDirectory())
-    .then(gitDirectory => Git.Repository.open(gitDirectory))
-    .then(repo => repo.getMasterCommit())
-    .then((firstCommitOnMaster) => {
-      console.log(tempFilePath);
-
-      console.log(firstCommitOnMaster);
-    });
-
-
-  //   .then((firstCommitOnMaster) => {
-  //     const history = firstCommitOnMaster.history();
-
-  //     history.on('commit', (commit) => {
-  //       const log = formatCommit(commit);
-  //       count += 1;
-
-
-  //       if (count === totalCommitCount) {
-
-  //       }
-  //     });
-
-  //     history.start();
-  //   })
-  //   .then(() => {
-  //     console.log(log);
-
-  //     // return writeAndOpen(log);
-  //   });
-
-
-  const writeAndOpen = () => fs.mkdtemp(path.join(os.tmpdir(), 'pmt'))
-    .then((folder) => {
-      console.log('folder: ', folder);
-
-      // writeFile(f)
-    })
-
-
-    // fs.writeFileSync(tmpFileLocation, log, (error) => {
-    //   console.error(error);
-    // });
-
-    // const editor = process.env.editor || 'less';
-
-    // spawn(editor, [tmpFileLocation], {
-    //   stdio: 'inherit',
-    // });
-  ;
-};
-
-
-/** open a temp file */
-const openTempFile = () => {
-
+  return `${string.substring(0, len - 3)}...`;
 };
 
 
@@ -118,16 +54,51 @@ const formatCommit = (commit) => {
 };
 
 
-/** leftpads content by a fixed value and culls left over values
- * @param string The string to left pad
- * @param len The size of the area to fill
+/** Creates the log
+ * @param history {object} NodeGit commit history
+ * @param writeStream {object} The writestream object
  */
-const leftPad = (string, len) => {
-  if (string.length < len) {
-    return Array(len - string.length).fill(' ').join('') + string;
-  }
+const createLog = (history, writeStream) => new Promise((resolve) => {
+  const totalCommitCount = commitCount();
+  let count = 0;
 
-  return `${string.substring(0, len - 3)}...`;
+  history.on('commit', (commit) => {
+    const commitMessage = formatCommit(commit);
+
+    writeStream.write(commitMessage);
+    count += 1;
+
+    if (count === totalCommitCount) {
+      writeStream.end();
+    }
+  });
+
+  history.start();
+  resolve();
+});
+
+
+/** The logging function of PMT
+ * @param options Other option arguments
+ * @return Promise whether the transaction has  succeeded or failed
+ */
+const pmtLog = (options) => {
+  let tempFilePath = null;
+  let writeStream = null;
+
+  return io.makeTempFile('pmt', 'logs')
+    .then((_tempFilePath) => {
+      tempFilePath = _tempFilePath;
+      writeStream = io.createWriteStream(_tempFilePath);
+    })
+    .then(() => io.getGitDirectory())
+    .then(gitDirectory => Git.Repository.open(gitDirectory))
+    .then(repo => repo.getMasterCommit())
+    .then(firstCommitOnMaster => firstCommitOnMaster.history())
+    .then(history => createLog(history, writeStream))
+    .then(() => {
+      io.openFileInReader(tempFilePath);
+    });
 };
 
 

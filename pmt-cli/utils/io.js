@@ -3,7 +3,11 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs').promises;
 
-const { existsSync } = require('fs');
+const { spawn } = require('child_process');
+const {
+  existsSync,
+  createWriteStream: fsCreateWriteStream,
+} = require('fs');
 
 /** Returns a promise that returns the path of the .git/ directory
  * @return {Promise<string>} The .git directory path */
@@ -50,9 +54,30 @@ const makeTempFile = (dirName, fileName) => {
 };
 
 
-/** adds content to a directory */
+/** creates a write stream to a file
+ * @param fileName {string} The name of the file to open a write stream to
+ * @return WriteStream a stream to add content to
+ */
+const createWriteStream = (fileName) => {
+  const options = { flags: 'a' };
+
+  return fsCreateWriteStream(fileName, options);
+};
+
+
+/** opens a file with user's prefered file reader (defaults to less)
+ * @param fileName The file to open with reader */
+const openFileInReader = (fileName) => {
+  const editor = process.env.editor || 'less';
+
+  spawn(editor, [fileName], {
+    stdio: 'inherit',
+  });
+};
 
 module.exports = {
   getGitDirectory,
   makeTempFile,
+  createWriteStream,
+  openFileInReader,
 };
