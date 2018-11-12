@@ -1,13 +1,13 @@
 const process = require('process');
 const path = require('path');
 const os = require('os');
-const fs = require('fs').promises;
+const fs = require('fs');
+const { promisify } = require('util');
 
-const { spawn } = require('child_process');
-const {
-  existsSync,
-  createWriteStream: fsCreateWriteStream,
-} = require('fs');
+const pager = require('default-pager');
+
+const mkdtemp = promisify(fs.mkdtemp);
+const writeFile = promisify(fs.writeFile);
 
 /** Returns a promise that returns the path of the .git/ directory
  * @return {Promise<string>} The .git directory path */
@@ -18,7 +18,7 @@ const getGitDirectory = () => new Promise((resolve, reject) => {
   while (splitPath.length >= 1) {
     const gitDir = path.join(...splitPath, '.git');
 
-    if (existsSync(gitDir)) {
+    if (fs.existsSync(gitDir)) {
       resolve(gitDir);
     }
 
@@ -37,12 +37,12 @@ const makeTempFile = (dirName, fileName) => {
   const directory = path.join(os.tmpdir(), `${dirName}-`);
   let tempFilePath = null;
 
-  return fs.mkdtemp(directory)
+  return mkdtemp(directory)
     .then((tempPath) => {
       tempFilePath = path.join(tempPath, fileName);
 
       // make sure the content of tempFile is empty
-      return fs.writeFile(tempFilePath, '');
+      return writeFile(tempFilePath, '');
     })
     .then(() => {
       if (!tempFilePath) {
@@ -55,24 +55,20 @@ const makeTempFile = (dirName, fileName) => {
 
 
 /** creates a write stream to a file
- * @param fileName {string} The name of the file to open a write stream to
+ * @param filePath {string} The path of the file to open a write stream to
  * @return WriteStream a stream to add content to
  */
-const createWriteStream = (fileName) => {
+const createWriteStream = (filePath) => {
   const options = { flags: 'a' };
 
-  return fsCreateWriteStream(fileName, options);
+  return fs.createWriteStream(filePath, options);
 };
 
 
 /** opens a file with user's prefered file reader (defaults to less)
- * @param fileName The file to open with reader */
-const openFileInReader = (fileName) => {
-  const editor = process.env.editor || 'less';
-
-  spawn(editor, [fileName], {
-    stdio: 'inherit',
-  });
+ * @param filePath The path of the file to open with reader */
+const openFileInReader = (filePath) => {
+  fs.createReadStream(filePath).pipe(pager());
 };
 
 module.exports = {
