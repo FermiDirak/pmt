@@ -2,8 +2,9 @@
 
 const program = require('commander');
 const Git = require('nodegit');
-const prettyDebug = require('./lib/pretty-debug');
+const prettyPrint = require('./utils/prettyPrint');
 
+const pmtStory = require('./lib/pmt-story');
 const pmtLog = require('./lib/pmt-log');
 const pmtAdd = require('./lib/pmt-add');
 
@@ -18,9 +19,11 @@ program
   .description('creates a story with the given id')
   .option('-d --description <description>', 'specifies a description for the feature')
   .action((ticket_id, options) => {
-    const {description} = options;
+    const { description } = options;
 
-    prettyDebug.printCommand("story", ticket_id, ['-d', description]);
+    prettyPrint.command('story', ticket_id, ['-d', description]);
+
+    pmtStory(ticket_id, description);
 
     process.exit(0);
   });
@@ -30,8 +33,8 @@ program
   .alias('task')
   .alias('subtask')
   .description('creates a subtask with a given descriptor')
-  .action(subtask_descriptor => {
-    prettyDebug.printCommand("sub", subtask_descriptor);
+  .action((subtask_descriptor) => {
+    prettyPrint.command('sub', subtask_descriptor);
 
     process.exit(0);
   });
@@ -39,20 +42,20 @@ program
 program
   .command('checkout <task_descriptor_regex>')
   .description('checks out specified story')
-  .action(task_descriptor_regex => {
-    prettyDebug.printCommand("checkout", task_descriptor_regex);
+  .action((task_descriptor_regex) => {
+    prettyPrint.command('checkout', task_descriptor_regex);
 
     process.exit(0);
   });
 
-  program
+program
   .command('diff [task_id]')
   .description('lists all changes made in a given task')
   .option('-a --all', 'specifies whether to show diff across all tasks')
   .action((task_id, options) => {
-    const {all} = options;
+    const { all } = options;
 
-    prettyDebug.printCommand("diff", task_id, ['-a', all]);
+    prettyPrint.command('diff', task_id, ['-a', all]);
 
     process.exit(0);
   });
@@ -64,7 +67,7 @@ program
   .action(() => {
     const args = program.rawArgs.slice(3);
 
-    prettyDebug.printCommand("add", args);
+    prettyPrint.command('add', args);
 
     pmtAdd(args);
 
@@ -74,11 +77,11 @@ program
 program
   .command('commit [task_id] [file ...]')
   .description('adds staged changes to commit "task_id"')
-  .option('-n --new <task_descriptor>', "creates a new task to add stage changes to")
+  .option('-n --new <task_descriptor>', 'creates a new task to add stage changes to')
   .action((env, file, options) => {
-    const {new: task_descriptor} = options;
+    const { new: task_descriptor } = options;
 
-    prettyDebug.printCommand("commit", `${env} ${file}`, ['-n', task_descriptor]);
+    prettyPrint.command('commit', `${env} ${file}`, ['-n', task_descriptor]);
 
     process.exit(0);
   });
@@ -89,14 +92,16 @@ program
   .command('log')
   .description('logs your commit history')
   .action(() => {
-    prettyDebug.printCommand("log");
+    prettyPrint.command('log');
 
-    pmtLog(currentDirectory)
+    // @TODO: add optional parameters
+
+    pmtLog()
       .then(() => {
         process.exit(0);
       })
-      .catch(() => {
-        prettyDebug.printError(error);
+      .catch((error) => {
+        prettyPrint.error(error);
         process.exit(1);
       });
   });

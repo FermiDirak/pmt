@@ -31,10 +31,12 @@
     "chalk": "^2.4.1",
     "commander": "^2.19.0",
     "git-commit-count": "^1.1.3",
-    "nodegit": "^0.23.0",
-    "nodemon": "nodemon"
+    "nodegit": "^0.23.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.5"
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "nodemon": "^1.18.6"
   }
 }

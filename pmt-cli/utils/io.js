@@ -1,1 +1,58 @@
-//@TODO: implement io
+const process = require('process');
+const path = require('path');
+const os = require('os');
+const fs = require('fs').promises;
+
+const { existsSync } = require('fs');
+
+/** Returns a promise that returns the path of the .git/ directory
+ * @return {Promise<string>} The .git directory path */
+const getGitDirectory = () => new Promise((resolve, reject) => {
+  const currentDirectory = process.cwd();
+  const splitPath = [path.sep, ...currentDirectory.split(path.sep)];
+
+  while (splitPath.length >= 1) {
+    const gitDir = path.join(...splitPath, '.git');
+
+    if (existsSync(gitDir)) {
+      resolve(gitDir);
+    }
+
+    splitPath.pop();
+  }
+
+  reject(new Error('not a git repository (or any of the parent directories): .git'));
+});
+
+
+/** Creates a temporary file in /tmp and returns the temporary file location
+ * @param dirName {string} the directory name
+ * @param fileName {string} the fileName of the file location
+ * @return {string} file path to temporary file */
+const makeTempFile = (dirName, fileName) => {
+  const directory = path.join(os.tmpdir(), `${dirName}-`);
+  let tempFilePath = null;
+
+  return fs.mkdtemp(directory)
+    .then((tempPath) => {
+      tempFilePath = path.join(tempPath, fileName);
+
+      // make sure the content of tempFile is empty
+      return fs.writeFile(tempFilePath, '');
+    })
+    .then(() => {
+      if (!tempFilePath) {
+        throw new Error('temp file not created');
+      }
+
+      return tempFilePath;
+    });
+};
+
+
+/** adds content to a directory */
+
+module.exports = {
+  getGitDirectory,
+  makeTempFile,
+};
