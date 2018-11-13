@@ -21,9 +21,9 @@ class Story {
    * @param task {Task} The task to look for
    * @return {boolean} whether the task is included or not */
   includesTask(task) {
-    // @TODO
-
-    return true;
+    return this.tasks.some(memberTask => {
+      return memberTask.commitHash === task.commitHash;
+    }
   }
 }
 
