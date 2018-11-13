@@ -1,4 +1,5 @@
 const Git = require('nodegit');
+const chalk = require('chalk');
 const io = require('../utils/io');
 
 class StoryInformation {
@@ -14,7 +15,15 @@ const formatStories = (stories) => {
   let message = '';
 
   stories.forEach((story) => {
-    message += `  * ${story.id}\n`;
+    let storyMessage = '  * ';
+
+    if (story.id === 'master') {
+      storyMessage += `${chalk.bold(story.id)}`;
+    } else {
+      storyMessage += `${story.id} ${chalk.italic('no description')}`;
+    }
+
+    message += `${storyMessage}\n`;
   });
 
   process.stdout.write(message);
