@@ -97,10 +97,14 @@ const readStories = () => getGitDirectory()
   });
 
 /** adds a story to .git/stories.json
+ * If the story already exists, the given story will be updated
+ * @param {Story} story The story to write to disk
  * @return {Promise<Array<stories>>} The new list of the stories in .git/stories.json */
 const writeStory = (story) => {
   let stories = [];
   let storiesPath = null;
+
+  //@TODO: update story if it already exists
 
   return readStories()
     .then((_stories) => {

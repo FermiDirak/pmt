@@ -1,23 +1,25 @@
 const Git = require('nodegit');
 const io = require('../utils/io');
+const gitUtils = require('../utils/git');
+
+const Story = require('./../datastructures/story');
+
+
 
 /** creates a story in .git/stories.json
  * @param {string} id The branch name associated with the story
  * @param {string} descriptor The description of the story */
-const pmtStory = (id, descriptor) => {
-  // Get a list of branches
+const pmtStory = (id, descriptor) => gitUtils.getBranchesList()
+  .then(branches => {
+    //@TODO: in the future, we should enforce this to be gitUsername/id
 
-  // if branch gitUsername/id doesn't exist:
-  //   create a branch gitUsername/id
-
-  // create story {id, descriptor}
-
-  // if story already exists:
-  //   update the story with the new content
-  // else: write story to .git/stories.json
-
-
+    if (branches.some(branch => branch === id)) {
+      return gitUtils.createBranch(id);
+    }
+  })
+  .then(() => new Story(id, descriptor))
+  .then(story => writeStory(story))
   // prompting to checkout to branch should happen in index.js
-}
+
 
 module.exports = pmtStory;

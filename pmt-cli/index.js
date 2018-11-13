@@ -13,12 +13,9 @@ program
   .description('The ultimate thirst quencher and git workflow tool');
 
 program
-  .command('story <ticket_id>')
-  .description('creates a story with the given id')
-  .option('-d --description <description>', 'specifies a description for the feature')
-  .action((ticketId, options) => {
-    const { description } = options;
-
+  .command('story <ticket_id> [description]')
+  .description('creates a story with the given id and description')
+  .action((ticketId, description) => {
     prettyPrint.command('story', ticketId, ['-d', description]);
 
     pmtStory(ticketId, description);
