@@ -1,6 +1,7 @@
 const Git = require('nodegit');
 const chalk = require('chalk');
 const io = require('../utils/io');
+const gitUtils = require('../utils/git');
 
 class StoryInformation {
   constructor(branchName) {
@@ -31,17 +32,7 @@ const formatStories = (stories) => {
 
 
 /** printes stories in a list format */
-const pmtStories = () => io.getGitDirectory()
-  .then(gitDirectory => Git.Repository.open(gitDirectory))
-  .then(repo => Git.Reference.list(repo))
-  .then(refs => refs.filter(ref => !!ref.match(/refs\/heads/g)))
-  .then(refs => refs.map((ref) => {
-    const branchName = ref.split('/');
-    branchName.shift();
-    branchName.shift();
-
-    return new StoryInformation(branchName.join('/'));
-  }))
+const pmtStories = () => gitUtils.getBranchesList()
   .then((stories) => { formatStories(stories); });
 
 module.exports = pmtStories;
