@@ -1,6 +1,4 @@
-/**
- * The Story struct contains information about a story
- */
+/** A struct that contains information about a story */
 class Story {
   constructor(id, descriptor = null) {
     this.id = id;
@@ -26,5 +24,13 @@ class Story {
     return true;
   }
 }
+
+/** deserializes a story in object form into a Story instance
+ * @param storyObject {object} The story object to be transformed
+ * @return {Story} the story instance */
+Story.deserialize = (storyObject) => {
+  return new Story(storyObject.id, storyObject.descriptor);
+}
+
 
 module.exports = Story;

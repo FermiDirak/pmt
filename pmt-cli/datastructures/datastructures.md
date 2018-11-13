@@ -2,7 +2,7 @@ This file documents the mechanisms PMT uses for storing and serialzing repositor
 
 PMT stores repository information in `.git/pmt`
 
-Currently there should only be one file in `.git/pmt`: stories
+Currently there should only be one file in `.git/pmt`: stories.json
 
 stories looks like this:
 

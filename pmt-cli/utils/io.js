@@ -4,10 +4,17 @@ const os = require('os');
 const fs = require('fs');
 const { promisify } = require('util');
 
+const Story = require('../datastructures/story');
+
 const pager = require('default-pager');
 
 const mkdtemp = promisify(fs.mkdtemp);
 const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
+
+
+const STORIES_FILENAME = 'stories.json';
+
 
 /** Returns a promise that returns the path of the .git/ directory
  * @return {Promise<string>} The .git directory path */
@@ -70,6 +77,46 @@ const createWriteStream = (filePath) => {
 const openFileInReader = (filePath) => {
   fs.createReadStream(filePath).pipe(pager());
 };
+
+
+/** reads content from .git/stories.json
+ * @return {Promise<Array<stories>>} A promise that returns the list of stories saved in memory */
+const readStories = () => getGitDirectory()
+  .then((gitDirectory) => path.join(gitDirectory, STORIES_FILENAME))
+  .then((storiesPath) => readFile(storiesPath))
+  .then((storiesContent) => {
+    if (!storiesContent) {
+      return [];
+    }
+
+    let stories = JSON.stringify(storiesContent);
+
+    stories.map(story => Story.deserialize(story));
+
+    return stories;
+  });
+
+/** adds a story to .git/stories.json
+ * @return {Promise<Array<stories>>} The new list of the stories in .git/stories.json */
+const writeStory = (story) => {
+  let stories = [];
+  let storiesPath = null;
+
+  return readStories()
+    .then((_stories) => {
+      stories = _stories;
+    })
+    .then(() => getGitDirectory())
+    .then((gitDirectory) => path.join(gitDirectory, STORIES_FILENAME))
+    .then(storiesPath => {
+      stories.push(story);
+
+      fs.writeFile(storiesPath, JSON.stringify(stories));
+
+      return stories;
+    });
+}
+
 
 module.exports = {
   getGitDirectory,
