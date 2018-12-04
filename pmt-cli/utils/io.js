@@ -5,6 +5,7 @@ const fs = require('fs');
 const { promisify } = require('util');
 
 const Story = require('../datastructures/story');
+const User = require('../datastructures/user');
 
 const pager = require('default-pager');
 
@@ -14,6 +15,7 @@ const readFile = promisify(fs.readFile);
 
 
 const STORIES_FILENAME = 'stories.json';
+const USER_FILENAME = 'user.json';
 
 
 /** Returns a promise that returns the path of the .git/ directory
@@ -121,10 +123,28 @@ const writeStory = (story) => {
     });
 }
 
+/** creates a user and stores it in .git/user.json
+ * If the user already exists, the user will be updated
+ * @param {User} user The user to write to storage
+ * @return {Promise<void>} */
+const createUser = user => {
+  console.log(User.serialize(user));
+
+  return getGitDirectory()
+    .then(gitDirectory => path.join(gitDirectory, USER_FILENAME))
+    .then(userPath => {
+      console.log('path', userPath);
+
+      return fs.writeFileSync(userPath, User.serialize(user));
+    })
+    .catch(error => {console.error(error)})
+}
+
 
 module.exports = {
   getGitDirectory,
   makeTempFile,
   createWriteStream,
   openFileInReader,
+  createUser,
 };
