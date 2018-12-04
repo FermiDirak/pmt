@@ -31,6 +31,7 @@ const createBranch = (branchName) => {
     return _repo.getHeadCommit();
   })
   .then(headCommit => repo.createBranch(branchName, headCommit, false))
+}
 
 module.exports = {
   getBranchesList,
