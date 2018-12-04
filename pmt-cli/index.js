@@ -2,6 +2,7 @@
 
 const program = require('commander');
 const prettyPrint = require('./utils/prettyPrint');
+const chalk = require('chalk');
 
 const pmtStory = require('./lib/pmt-story');
 const pmtLog = require('./lib/pmt-log');
@@ -10,7 +11,19 @@ const pmtStories = require('./lib/pmt-stories');
 
 program
   .version('1.0.0')
-  .description('The ultimate thirst quencher and git workflow tool');
+  .description(chalk.cyan([
+    '         ██▓███   ███▄ ▄███▓▄▄▄█████▓             ',
+    '         ▓██░  ██▒▓██▒▀█▀ ██▒▓  ██▒ ▓▒            ',
+    '         ▓██░ ██▓▒▓██    ▓██░▒ ▓██░ ▒░            ',
+    '         ▒██▄█▓▒ ▒▒██    ▒██ ░ ▓██▓ ░             ',
+    '         ▒██▒ ░  ░▒██▒   ░██▒  ▒██▒ ░             ',
+    '         ▒█▒░ ░  ░░ ▒░   ░  ░  ▒ ░░               ',
+    '         ░▓ ░     ░  ░      ░    ░                ',
+    '         ░░       ░      ░     ░                  ',
+    '          ░              ░                        ',
+    '                                                  ',
+    'The ultimate thirst quencher and git workflow tool'
+  ].join('\n')));
 
 program
   .command('story <ticket_id> [description]')
