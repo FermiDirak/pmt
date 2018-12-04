@@ -128,8 +128,6 @@ const writeStory = (story) => {
  * @param {User} user The user to write to storage
  * @return {Promise<void>} */
 const createUser = user => {
-  console.log(User.serialize(user));
-
   return getGitDirectory()
     .then(gitDirectory => path.join(gitDirectory, USER_FILENAME))
     .then(userPath => {
