@@ -3,14 +3,8 @@ const chalk = require('chalk');
 const io = require('../utils/io');
 const gitUtils = require('../utils/git');
 
-class StoryInformation {
-  constructor(branchName) {
-    this.id = branchName;
-  }
-}
-
 /** formats a list of stories for std output
- * @param stories {Array<string>} A list of stories
+ * @param stories {Array<Story>} A list of stories
  * @return string The formatted string to output */
 const formatStories = (stories) => {
   let message = '';
@@ -32,7 +26,10 @@ const formatStories = (stories) => {
 
 
 /** printes stories in a list format */
-const pmtStories = () => gitUtils.getBranchesList()
-  .then((stories) => { formatStories(stories); });
+const pmtStories = () => gitUtils
+  .getBranchesList()
+  .then((stories) => {
+    formatStories(stories);
+  });
 
 module.exports = pmtStories;
