@@ -6,9 +6,9 @@ const { promisify } = require('util');
 const chalk = require('chalk');
 
 const pager = require('default-pager');
-const Story = require('../datastructures/story');
-const User = require('../datastructures/user');
+const git = require('./git');
 
+const Story = require('../datastructures/story');
 
 const mkdtemp = promisify(fs.mkdtemp);
 const writeFile = promisify(fs.writeFile);
@@ -17,6 +17,15 @@ const readFile = promisify(fs.readFile);
 
 const STORIES_FILENAME = 'stories.json';
 const USER_FILENAME = 'user.json';
+
+/** Writes content to the fileName in the pmt directory
+ * @param {string} fileName The name of the file to write content to
+ * @param {string} content The content to write to file */
+const writeToPMT = async (fileName, content) => {
+  const filePath = await path.join(git.getGitDirectory(), fileName);
+
+  return writeFile(filePath, content);
+};
 
 
 /** Returns a promise that returns the path of the .git/ directory
@@ -142,26 +151,15 @@ const storiesFromBranches = branches => readStories()
       return new Story(branchName, chalk.italic('no description'));
     });
   });
-/** creates a user and stores it in .git/user.json
- * If the user already exists, the user will be updated
- * @param {User} user The user to write to storage
- * @return {Promise<void>} */
-const createUser = user => getGitDirectory()
-  .then(gitDirectory => path.join(gitDirectory, USER_FILENAME))
-  .then((userPath) => {
-    console.log('path', userPath);
-
-    return fs.writeFileSync(userPath, User.serialize(user));
-  })
-  .catch((error) => { console.error(error); });
-
 
 module.exports = {
+  STORIES_FILENAME,
+  USER_FILENAME,
+  writeToPMT,
   getGitDirectory,
   makeTempFile,
   createWriteStream,
   openFileInReader,
   writeStory,
   storiesFromBranches,
-  createUser,
 };

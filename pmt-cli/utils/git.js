@@ -1,9 +1,30 @@
+const path = require('path');
+const fs = require('fs');
+
 const Git = require('nodegit');
 const io = require('../utils/io');
 
-const Story = require('../datastructures/story');
+/** Returns the path of the .git/ directory
+ * @return the .git directory path */
+const getGitDirectory = () => {
+  const currentDirectory = process.cwd();
+  const splitPath = [path.sep, ...currentDirectory.split(path.sep)];
 
-/** gets a list of branches called branhes in the current repository
+  // recursively attempt to find .git directory
+  while (splitPath.length >= 1) {
+    const gitDir = path.join(...splitPath, '.git');
+
+    if (fs.existsSync(gitDir)) {
+      return gitDir;
+    }
+
+    splitPath.pop();
+  }
+
+  throw new Error('not a git repository (no .git)');
+};
+
+/** gets a list of branches in the current repository
  * @return {Array<string>} A list of branch names */
 const getBranchesList = () => io.getGitDirectory()
   .then(gitDirectory => Git.Repository.open(gitDirectory))
@@ -36,4 +57,5 @@ const createBranch = (branchName) => {
 module.exports = {
   getBranchesList,
   createBranch,
+  getGitDirectory,
 };

@@ -24,25 +24,26 @@ program
     '         ░░       ░      ░     ░                  ',
     '          ░              ░                        ',
     '                                                  ',
-    'The ultimate thirst quencher and git workflow tool'
+    'The ultimate thirst quencher and git workflow tool',
   ].join('\n')));
 
 program
   .command('init')
   .description('initializes pmt in the given repository')
-  .action(() => {
-    prettyPrint.command('init');
+  .action(async () => {
+    try {
+      const { nick } = await inquirer.prompt({
+        type: 'input',
+        name: 'nick',
+        message: 'what would you like to be known as?',
+      });
+      await pmtInit(nick);
 
-    inquirer.prompt({
-      type: 'input',
-      name: "nick",
-      message: 'what would you like to be known as?'
-    })
-      .then((response) => response.nick)
-      .then((nick) => pmtInit(nick));
-      // .then(() => {
-      //   process.exit(0)
-      // });
+      // process.exit(0);
+    } catch (error) {
+      console.error(error);
+      // process.exit(1);
+    }
   });
 
 program
