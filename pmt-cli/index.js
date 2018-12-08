@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const inquirer = require('inquirer');
+const chalk = require('chalk');
 const prettyPrint = require('./utils/prettyPrint');
 
+const pmtInit = require('./lib/pmt-init');
 const pmtStory = require('./lib/pmt-story');
 const pmtLog = require('./lib/pmt-log');
 const pmtAdd = require('./lib/pmt-add');
@@ -10,7 +13,37 @@ const pmtStories = require('./lib/pmt-stories');
 
 program
   .version('1.0.0')
-  .description('The ultimate thirst quencher and git workflow tool');
+  .description(chalk.cyan([
+    '         ██▓███   ███▄ ▄███▓▄▄▄█████▓             ',
+    '         ▓██░  ██▒▓██▒▀█▀ ██▒▓  ██▒ ▓▒            ',
+    '         ▓██░ ██▓▒▓██    ▓██░▒ ▓██░ ▒░            ',
+    '         ▒██▄█▓▒ ▒▒██    ▒██ ░ ▓██▓ ░             ',
+    '         ▒██▒ ░  ░▒██▒   ░██▒  ▒██▒ ░             ',
+    '         ▒█▒░ ░  ░░ ▒░   ░  ░  ▒ ░░               ',
+    '         ░▓ ░     ░  ░      ░    ░                ',
+    '         ░░       ░      ░     ░                  ',
+    '          ░              ░                        ',
+    '                                                  ',
+    'The ultimate thirst quencher and git workflow tool'
+  ].join('\n')));
+
+program
+  .command('init')
+  .description('initializes pmt in the given repository')
+  .action(() => {
+    prettyPrint.command('init');
+
+    inquirer.prompt({
+      type: 'input',
+      name: "nick",
+      message: 'what would you like to be known as?'
+    })
+      .then((response) => response.nick)
+      .then((nick) => pmtInit(nick));
+      // .then(() => {
+      //   process.exit(0)
+      // });
+  });
 
 program
   .command('story <ticket_id> [description]')
