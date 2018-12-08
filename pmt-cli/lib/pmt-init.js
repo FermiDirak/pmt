@@ -1,4 +1,6 @@
+const chalk = require('chalk');
 const io = require('../utils/io');
+
 const User = require('../datastructures/user');
 
 /** creates a user and stores it in .git/user.json
@@ -14,7 +16,7 @@ const pmtInit = async (nick) => {
   const user = new User(nick);
   await createUser(user);
 
-  process.stdout.write(`nick set to: ${nick}\n`);
+  process.stdout.write(`nick set to: ${chalk.cyan(nick)}\n`);
 };
 
 module.exports = pmtInit;

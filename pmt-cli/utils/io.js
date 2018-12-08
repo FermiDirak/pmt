@@ -1,4 +1,3 @@
-const process = require('process');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -26,26 +25,6 @@ const writeToPMT = async (fileName, content) => {
 
   return writeFile(filePath, content);
 };
-
-
-/** Returns a promise that returns the path of the .git/ directory
- * @return {Promise<string>} The .git directory path */
-const getGitDirectory = () => new Promise((resolve, reject) => {
-  const currentDirectory = process.cwd();
-  const splitPath = [path.sep, ...currentDirectory.split(path.sep)];
-
-  while (splitPath.length >= 1) {
-    const gitDir = path.join(...splitPath, '.git');
-
-    if (fs.existsSync(gitDir)) {
-      resolve(gitDir);
-    }
-
-    splitPath.pop();
-  }
-
-  reject(new Error('not a git repository (or any of the parent directories): .git'));
-});
 
 
 /** Creates a temporary file in /tmp and returns the temporary file location
@@ -156,7 +135,6 @@ module.exports = {
   STORIES_FILENAME,
   USER_FILENAME,
   writeToPMT,
-  getGitDirectory,
   makeTempFile,
   createWriteStream,
   openFileInReader,

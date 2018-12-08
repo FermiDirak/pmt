@@ -10,10 +10,9 @@ const getGitDirectory = () => {
   const currentDirectory = process.cwd();
   const splitPath = [path.sep, ...currentDirectory.split(path.sep)];
 
-  // recursively attempt to find .git directory
+  // recursively traverse up folder structure to find .git directory
   while (splitPath.length >= 1) {
     const gitDir = path.join(...splitPath, '.git');
-
     if (fs.existsSync(gitDir)) {
       return gitDir;
     }
@@ -26,18 +25,17 @@ const getGitDirectory = () => {
 
 /** gets a list of branches in the current repository
  * @return {Array<string>} A list of branch names */
-const getBranchesList = () => io.getGitDirectory()
-  .then(gitDirectory => Git.Repository.open(gitDirectory))
-  .then(repo => Git.Reference.list(repo))
-  .then(refs => refs.filter(ref => !!ref.match(/refs\/heads/g)))
-  .then(refs => refs.map((ref) => {
-    const branchName = ref.split('/');
-    branchName.shift();
-    branchName.shift();
+const getBranchesList = async () => {
+  const gitDirectory = getGitDirectory();
+  const repository = await Git.Repository.open(gitDirectory);
+  const references = await Git.Reference.list(repository)
+    .filter(reference => !!reference.match(/refs\/head/g));
 
-    return branchName.join('/');
-  }));
-
+  return references.map((reference) => {
+    const branchName = reference.split('/');
+    return branchName.splice(2).join('/');
+  });
+};
 
 /** Creates a branch with the given branch name based off HEAD
  * @param branchName The branchName to give the new branch */

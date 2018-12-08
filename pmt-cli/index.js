@@ -39,10 +39,10 @@ program
       });
       await pmtInit(nick);
 
-      // process.exit(0);
+      process.exit(0);
     } catch (error) {
-      console.error(error);
-      // process.exit(1);
+      process.stderr.write(error);
+      process.exit(1);
     }
   });
 
