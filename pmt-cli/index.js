@@ -30,14 +30,19 @@ program
 program
   .command('init')
   .description('initializes pmt in the given repository')
-  .action(async () => {
+  .option('-u --username', 'specify your username')
+  .action(async (optionalUsername) => {
     try {
-      const { nick } = await inquirer.prompt({
-        type: 'input',
-        name: 'nick',
-        message: 'what would you like to be known as?',
-      });
-      await pmtInit(nick);
+      if (typeof optionalUsername === 'string') {
+        await pmtInit(optionalUsername);
+      } else {
+        const { username } = await inquirer.prompt({
+          type: 'input',
+          name: 'username',
+          message: 'what would you like to be known as?',
+        });
+        await pmtInit(username);
+      }
 
       process.exit(0);
     } catch (error) {

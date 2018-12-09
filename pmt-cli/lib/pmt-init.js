@@ -16,7 +16,7 @@ const pmtInit = async (nick) => {
   const user = new User(nick);
   await createUser(user);
 
-  process.stdout.write(`nick set to: ${chalk.cyan(nick)}\n`);
+  process.stdout.write(`nickname set to: ${chalk.cyan(nick)}\n`);
 };
 
 module.exports = pmtInit;
