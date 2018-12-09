@@ -14,7 +14,7 @@ const formatStories = (stories) => {
     if (story.id === 'master') {
       formattedStory += `${chalk.bold(story.id)}`;
     } else {
-      formattedStory += `${story.id} ${chalk.italic('no description')}`;
+      formattedStory += `${story.id} ${chalk.italic(story.descriptor || 'no description')}`;
     }
 
     formattedStories += `${formattedStory}\n`;

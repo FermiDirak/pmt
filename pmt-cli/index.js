@@ -28,6 +28,14 @@ program
   ].join('\n')));
 
 program
+  .command('help')
+  .description('reads the documentation for PMT')
+  .action(() => {
+    program.outputHelp();
+    process.exit(0);
+  });
+
+program
   .command('init')
   .description('initializes pmt in the given repository')
   .option('-u --username', 'specify your username')
@@ -54,12 +62,14 @@ program
 program
   .command('story <ticket_id> [description]')
   .description('creates a story with the given id and description')
-  .action((ticketId, description) => {
-    prettyPrint.command('story', ticketId, ['-d', description]);
+  .action(async (ticketId, description) => {
+    try {
+      await pmtStory(ticketId, description);
 
-    pmtStory(ticketId, description);
-
-    process.exit(0);
+      process.exit(0);
+    } catch (error) {
+      process.exit(1);
+    }
   });
 
 program

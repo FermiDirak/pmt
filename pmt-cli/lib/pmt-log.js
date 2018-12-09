@@ -70,9 +70,7 @@ const createLog = (history, writeStream) => new Promise((resolve) => {
 });
 
 
-/** The logging function of PMT
- * @param options Other option arguments
- * @return Promise whether the transaction has  succeeded or failed */
+/** pmt's equivalent for git log but decorated for stories */
 const pmtLog = () => {
   let tempFilePath = null;
   let writeStream = null;
@@ -91,6 +89,5 @@ const pmtLog = () => {
       io.openFileInReader(tempFilePath);
     });
 };
-
 
 module.exports = pmtLog;

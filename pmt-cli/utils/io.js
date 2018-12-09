@@ -33,7 +33,7 @@ const softInitializePMTFile = async (fileName) => {
   try {
     await access(filePath);
   } catch (error) {
-    await writeFile(filePath, 'test');
+    await writeFile(filePath, '');
   }
 
   return filePath;
