@@ -1,35 +1,38 @@
-const Git = require('nodegit');
 const chalk = require('chalk');
-const io = require('../utils/io');
-const gitUtils = require('../utils/git');
+const git = require('../utils/git');
+const Story = require('../datastructures/story');
 
 /** formats a list of stories for std output
  * @param stories {Array<Story>} A list of stories
- * @return string The formatted string to output */
+ * @return {string} The formatted string to output */
 const formatStories = (stories) => {
-  let message = '';
+  let formattedStories = '';
 
   stories.forEach((story) => {
-    let storyMessage = '  * ';
+    let formattedStory = '  * ';
 
     if (story.id === 'master') {
-      storyMessage += `${chalk.bold(story.id)}`;
+      formattedStory += `${chalk.bold(story.id)}`;
     } else {
-      storyMessage += `${story.id} ${chalk.italic('no description')}`;
+      formattedStory += `${story.id} ${chalk.italic('no description')}`;
     }
 
-    message += `${storyMessage}\n`;
+    formattedStories += `${formattedStory}\n`;
   });
 
-  process.stdout.write(message);
+  return formattedStories;
 };
 
+/** Gets the list of stories from a list of branches
+ * @param branches {Array<string>} The list of branches used to update stories
+ * @return {Array<Story>} The list of stories */
+const storiesFromBranches = async branches => Story.syncStoriesWithBranches(branches);
 
 /** printes stories in a list format */
-const pmtStories = () => gitUtils
-  .getBranchesList()
-  .then((stories) => {
-    formatStories(stories);
-  });
+const pmtStories = async () => {
+  const branchesList = await git.getBranchesList();
+  const stories = await storiesFromBranches(branchesList);
+  process.stdout.write(formatStories(stories));
+};
 
 module.exports = pmtStories;

@@ -2,12 +2,9 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const { promisify } = require('util');
-const chalk = require('chalk');
 
 const pager = require('default-pager');
 const git = require('./git');
-
-const Story = require('../datastructures/story');
 
 const mkdtemp = promisify(fs.mkdtemp);
 const writeFile = promisify(fs.writeFile);
@@ -22,10 +19,29 @@ const USER_FILENAME = 'user.json';
  * @param {string} content The content to write to file */
 const writeToPMT = async (fileName, content) => {
   const filePath = await path.join(git.getGitDirectory(), fileName);
-
   return writeFile(filePath, content);
 };
 
+/** Creates an empty PMT file if one doesn't already exist
+ * @param {string} fileName The file to create if DNE */
+const softInitializePMTFile = async (fileName) => {
+  const filePath = await path.join(git.getGitDirectory(), fileName);
+
+  try {
+    await fs.access(filePath);
+  } catch (error) {
+    writeToPMT(fileName, '');
+  }
+};
+
+/** Reads content form pmt file
+ * @param {string} fileName The file to read content from
+ * @return {string} the content of the file */
+const readFromPMT = async (fileName) => {
+  await softInitializePMTFile(fileName);
+  const filePath = await path.join(git.getGitDirectory(), fileName);
+  return readFile(filePath, 'utf8');
+};
 
 /** Creates a temporary file in /tmp and returns the temporary file location
  * @param dirName {string} the directory name
@@ -70,74 +86,73 @@ const openFileInReader = (filePath) => {
 };
 
 
-/** reads content from .git/stories.json
- * @return {Promise<Array<stories>>} A promise that returns the list of stories saved in memory */
-const readStories = () => getGitDirectory()
-  .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
-  .then(storiesPath => readFile(storiesPath))
-  .then((storiesContent) => {
-    if (!storiesContent) {
-      return [];
-    }
+// /** reads content from .git/stories.json
+//  * @return {Promise<Array<stories>>} A promise that returns the list of stories saved in memory */
+// const readStories = () => getGitDirectory()
+//   .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
+//   .then(storiesPath => readFile(storiesPath))
+//   .then((storiesContent) => {
+//     if (!storiesContent) {
+//       return [];
+//     }
 
-    const stories = JSON.stringify(storiesContent);
+//     const stories = JSON.stringify(storiesContent);
 
-    stories.map(story => Story.deserialize(story));
+//     stories.map(story => Story.deserialize(story));
 
-    return stories;
-  });
+//     return stories;
+//   });
 
 
-/** adds a story to .git/stories.json
- * If the story already exists, the given story will be updated
- * @param {Story} story The story to write to disk
- * @return {Promise<Array<stories>>} The new list of the stories in .git/stories.json */
-const writeStory = (story) => {
-  // @TODO: update story if it already exists
-  let stories = [];
+// /** adds a story to .git/stories.json
+//  * If the story already exists, the given story will be updated
+//  * @param {Story} story The story to write to disk
+//  * @return {Promise<Array<stories>>} The new list of the stories in .git/stories.json */
+// const writeStory = (story) => {
+//   // @TODO: update story if it already exists
+//   let stories = [];
 
-  return readStories()
-    .then((_stories) => {
-      stories = _stories;
-    })
-    .then(() => getGitDirectory())
-    .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
-    .then((storiesPath) => {
-      stories.push(story);
+//   return readStories()
+//     .then((_stories) => {
+//       stories = _stories;
+//     })
+//     .then(() => getGitDirectory())
+//     .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
+//     .then((storiesPath) => {
+//       stories.push(story);
 
-      fs.writeFile(storiesPath, JSON.stringify(stories));
+//       fs.writeFile(storiesPath, JSON.stringify(stories));
 
-      return stories;
-    });
-};
+//       return stories;
+//     });
+// };
 
-/** gets a list of stories from a list of branches
- * @param branches {Array<string>} A list of branches
- * @return {Promise<Array<stories>>} A list of stories associated to the branches */
-const storiesFromBranches = branches => readStories()
-  .then((stories) => {
-    const storiesMap = stories.reduce((reducer, story) => {
-      const newReducer = reducer;
-      newReducer[story.id] = story;
-      return newReducer;
-    }, {});
+// /** gets a list of stories from a list of branches
+//  * @param branches {Array<string>} A list of branches
+//  * @return {Promise<Array<stories>>} A list of stories associated to the branches */
+// const storiesFromBranches = branches => readStories()
+//   .then((stories) => {
+//     const storiesMap = stories.reduce((reducer, story) => {
+//       const newReducer = reducer;
+//       newReducer[story.id] = story;
+//       return newReducer;
+//     }, {});
 
-    return branches.map((branchName) => {
-      if (storiesMap[branchName]) {
-        return storiesMap[branchName];
-      }
+//     return branches.map((branchName) => {
+//       if (storiesMap[branchName]) {
+//         return storiesMap[branchName];
+//       }
 
-      return new Story(branchName, chalk.italic('no description'));
-    });
-  });
+//       return new Story(branchName, chalk.italic('no description'));
+//     });
+//   });
 
 module.exports = {
   STORIES_FILENAME,
   USER_FILENAME,
+  readFromPMT,
   writeToPMT,
   makeTempFile,
   createWriteStream,
   openFileInReader,
-  writeStory,
-  storiesFromBranches,
 };

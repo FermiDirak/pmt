@@ -28,7 +28,7 @@ const getGitDirectory = () => {
 const getBranchesList = async () => {
   const gitDirectory = getGitDirectory();
   const repository = await Git.Repository.open(gitDirectory);
-  const references = await Git.Reference.list(repository)
+  const references = (await Git.Reference.list(repository))
     .filter(reference => !!reference.match(/refs\/head/g));
 
   return references.map((reference) => {
