@@ -38,21 +38,43 @@ Story.deserializeStories = (storiesContent) => {
   }
 };
 
-/** syncs stories store with the given list of branches
- * @param {Array<string>} list of branches
- * @return {Array<stories>} A list of stories */
-Story.syncStoriesWithBranches = async (branches) => {
-  const stories = await Story.getStories();
-
-  console.log(branches, stories);
-};
-
+/** serializes a list of stories
+ * @param {Array<Story>} stories The list of stories to serialize
+ * @return {string} the serialized stories */
+Story.serializeStories = stories => JSON.stringify(stories);
 
 /** retrieves the list of saved stories */
-Story.getStories = async () => {
+Story.readStories = async () => {
   const serializedStories = await io.readFromPMT(io.STORIES_FILENAME);
   return Story.deserializeStories(serializedStories);
 };
 
+/** writes stories to the stories store
+ * @param {Array<Story>} stories The list of stories to store */
+Story.writeStories = async (stories) => {
+  const serializedStories = Story.serializeStories(stories);
+  io.writeToPMT(io.STORIES_FILENAME, serializedStories);
+};
+
+/** syncs stories store with the given list of branches
+ * @param {Array<string>} list of branches
+ * @return {Array<stories>} A list of stories */
+Story.syncStoriesWithBranches = async (branches) => {
+  const stories = await Story.readStories();
+
+  const storiesMap = stories.reduce((acc, story) => {
+    acc[story.id] = story;
+    return acc;
+  }, {});
+
+  branches.forEach((branch) => {
+    if (!storiesMap[branch]) {
+      storiesMap[branch] = new Story(branch, '');
+    }
+  });
+
+
+  return Object.values(storiesMap);
+};
 
 module.exports = Story;
