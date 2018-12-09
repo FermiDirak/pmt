@@ -1,8 +1,7 @@
-const path = require('path');
 const fs = require('fs');
-
+const path = require('path');
 const Git = require('nodegit');
-const io = require('../utils/io');
+
 
 /** Returns the path of the .git/ directory
  * @return the .git directory path */
@@ -37,23 +36,35 @@ const getBranchesList = async () => {
   });
 };
 
-/** Creates a branch with the given branch name based off HEAD
+/** fetches master branch */
+const fetchMaster = async () => {
+  const gitDirectory = await getGitDirectory();
+  const repo = await Git.Repository.open(gitDirectory);
+
+  await repo.fetch('origin', {
+    callbacks: {
+      credentials(url, userName) {
+        return Git.Cred.sshKeyFromAgent(userName);
+      },
+    },
+  });
+};
+
+/** Creates a branch with the given branch name based off origin HEAD
  * @param branchName The branchName to give the new branch */
-const createBranch = (branchName) => {
-  let repo = null;
+const createBranch = async (branchName) => {
+  await fetchMaster();
 
-  return io.getGitDirectory()
-    .then(gitDirectory => Git.repository.open(gitDirectory))
-    .then((_repo) => {
-      repo = _repo;
+  const gitDirectory = await getGitDirectory();
+  const repo = await Git.Repository.open(gitDirectory);
+  const headCommit = await repo.getHeadCommit();
 
-      return _repo.getHeadCommit();
-    })
-    .then(headCommit => repo.createBranch(branchName, headCommit, false));
+  repo.createBranch(branchName, headCommit, false);
 };
 
 module.exports = {
-  getBranchesList,
-  createBranch,
   getGitDirectory,
+  getBranchesList,
+  fetchMaster,
+  createBranch,
 };
