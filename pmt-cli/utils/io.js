@@ -9,37 +9,49 @@ const git = require('./git');
 const mkdtemp = promisify(fs.mkdtemp);
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
+const mkdir = promisify(fs.mkdir);
+const access = promisify(fs.access);
 
-
+const PMT_DIRECTORY = 'pmt';
 const STORIES_FILENAME = 'stories.json';
 const USER_FILENAME = 'user.json';
+
+/** Creates an empty pmt file if one doesn't already exist
+ * @param {string} fileName The file to create if DNE
+ * @return {string} the filepath to the pmt file */
+const softInitializePMTFile = async (fileName) => {
+  const gitDirectory = await git.getGitDirectory();
+  const folderDirectory = path.join(gitDirectory, PMT_DIRECTORY);
+  const filePath = path.join(folderDirectory, fileName);
+
+  try {
+    await access(folderDirectory);
+  } catch (error) {
+    await mkdir(folderDirectory);
+  }
+
+  try {
+    await access(filePath);
+  } catch (error) {
+    await writeFile(filePath, 'test');
+  }
+
+  return filePath;
+};
 
 /** Writes content to the fileName in the pmt directory
  * @param {string} fileName The name of the file to write content to
  * @param {string} content The content to write to file */
 const writeToPMT = async (fileName, content) => {
-  const filePath = await path.join(git.getGitDirectory(), fileName);
+  const filePath = await softInitializePMTFile(fileName);
   return writeFile(filePath, content);
-};
-
-/** Creates an empty PMT file if one doesn't already exist
- * @param {string} fileName The file to create if DNE */
-const softInitializePMTFile = async (fileName) => {
-  const filePath = await path.join(git.getGitDirectory(), fileName);
-
-  try {
-    await fs.access(filePath);
-  } catch (error) {
-    writeToPMT(fileName, '');
-  }
 };
 
 /** Reads content form pmt file
  * @param {string} fileName The file to read content from
  * @return {string} the content of the file */
 const readFromPMT = async (fileName) => {
-  await softInitializePMTFile(fileName);
-  const filePath = await path.join(git.getGitDirectory(), fileName);
+  const filePath = await softInitializePMTFile(fileName);
   return readFile(filePath, 'utf8');
 };
 
@@ -84,68 +96,6 @@ const createWriteStream = (filePath) => {
 const openFileInReader = (filePath) => {
   fs.createReadStream(filePath).pipe(pager());
 };
-
-
-// /** reads content from .git/stories.json
-//  * @return {Promise<Array<stories>>} A promise that returns the list of stories saved in memory */
-// const readStories = () => getGitDirectory()
-//   .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
-//   .then(storiesPath => readFile(storiesPath))
-//   .then((storiesContent) => {
-//     if (!storiesContent) {
-//       return [];
-//     }
-
-//     const stories = JSON.stringify(storiesContent);
-
-//     stories.map(story => Story.deserialize(story));
-
-//     return stories;
-//   });
-
-
-// /** adds a story to .git/stories.json
-//  * If the story already exists, the given story will be updated
-//  * @param {Story} story The story to write to disk
-//  * @return {Promise<Array<stories>>} The new list of the stories in .git/stories.json */
-// const writeStory = (story) => {
-//   // @TODO: update story if it already exists
-//   let stories = [];
-
-//   return readStories()
-//     .then((_stories) => {
-//       stories = _stories;
-//     })
-//     .then(() => getGitDirectory())
-//     .then(gitDirectory => path.join(gitDirectory, STORIES_FILENAME))
-//     .then((storiesPath) => {
-//       stories.push(story);
-
-//       fs.writeFile(storiesPath, JSON.stringify(stories));
-
-//       return stories;
-//     });
-// };
-
-// /** gets a list of stories from a list of branches
-//  * @param branches {Array<string>} A list of branches
-//  * @return {Promise<Array<stories>>} A list of stories associated to the branches */
-// const storiesFromBranches = branches => readStories()
-//   .then((stories) => {
-//     const storiesMap = stories.reduce((reducer, story) => {
-//       const newReducer = reducer;
-//       newReducer[story.id] = story;
-//       return newReducer;
-//     }, {});
-
-//     return branches.map((branchName) => {
-//       if (storiesMap[branchName]) {
-//         return storiesMap[branchName];
-//       }
-
-//       return new Story(branchName, chalk.italic('no description'));
-//     });
-//   });
 
 module.exports = {
   STORIES_FILENAME,

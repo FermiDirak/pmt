@@ -7,12 +7,11 @@ class User {
   }
 }
 
-User.serialize = (user) => {
-  return JSON.stringify(user);
-}
+/** Serializes the user for storage
+ * @param {User} user The user instance to serialize
+ */
+User.serialize = user => JSON.stringify(user);
 
-User.deserialize = (serializedUser) => {
-  return User(JSON.parse(serializedUser).nick);
-}
+User.deserialize = serializedUser => User(JSON.parse(serializedUser).nick);
 
 module.exports = User;
