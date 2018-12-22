@@ -24,4 +24,4 @@ then creates a branch named ${nick}/${ticket_id}.
 ## SEE ALSO
 
 * pmt(1)
-* README
+* README 

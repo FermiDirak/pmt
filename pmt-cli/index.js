@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const prettyPrint = require('./utils/prettyPrint');
 
 const pmtInit = require('./lib/pmt-init');
+const pmtConfig = require('./lib/pmt-config');
 const pmtStory = require('./lib/pmt-story');
 const pmtLog = require('./lib/pmt-log');
 const pmtAdd = require('./lib/pmt-add');
@@ -60,12 +61,23 @@ program
   });
 
 program
+  .command('config')
+  .description('displays the local config for PMT')
+  .action(async () => {
+    try {
+      await pmtConfig();
+      process.exit(0);
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+program
   .command('story <ticket_id> [description]')
   .description('creates a story with the given id and description')
   .action(async (ticketId, description) => {
     try {
       await pmtStory(ticketId, description);
-
       process.exit(0);
     } catch (error) {
       process.exit(1);
