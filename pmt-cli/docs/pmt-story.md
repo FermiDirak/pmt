@@ -16,12 +16,7 @@ filterable.
 Calling `pmt story <ticket_id> descriptor` fetches origin,
 then creates a branch named ${nick}/${ticket_id}.
 
-## @TODO
-
-* Add the ability to specify a topic, and show the appropriate
-  documentation page.
-
 ## SEE ALSO
 
 * pmt(1)
-* README 
+* README
