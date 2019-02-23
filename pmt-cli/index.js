@@ -29,8 +29,7 @@ program
   ].join('\n')));
 
 program
-  .command('help')
-  .description('reads the documentation for PMT')
+  .command('help', 'output documentation for PMT', { isDefault: true })
   .action(() => {
     program.outputHelp();
     process.exit(0);
@@ -55,7 +54,7 @@ program
 
       process.exit(0);
     } catch (error) {
-      process.stderr.write(error);
+      process.stdout.write(error);
       process.exit(1);
     }
   });
@@ -68,6 +67,7 @@ program
       await pmtConfig();
       process.exit(0);
     } catch (error) {
+      process.stdout.write(error);
       process.exit(1);
     }
   });
@@ -80,6 +80,7 @@ program
       await pmtStory(ticketId, description);
       process.exit(0);
     } catch (error) {
+      process.stdout.write(error);
       process.exit(1);
     }
   });
@@ -95,8 +96,7 @@ program
         process.exit(0);
       })
       .catch((error) => {
-        prettyPrint.error(error);
-
+        process.stdout.write(error);
         process.exit(1);
       });
   });
@@ -164,14 +164,16 @@ program
 program
   .command('log')
   .description('logs your commit history')
-  .action(() => {
+  .action(async () => {
     prettyPrint.command('log');
 
-    pmtLog()
-      .catch((error) => {
-        prettyPrint.error(error);
-        process.exit(1);
-      });
+    try {
+      pmtLog();
+      process.exit(0);
+    } catch (error) {
+      process.stdout(error);
+      process.exit(1);
+    }
   });
 
 program.parse(process.argv);

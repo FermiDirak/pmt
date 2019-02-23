@@ -71,7 +71,7 @@ const createLog = (history, writeStream) => new Promise((resolve) => {
 
 
 /** pmt's equivalent for git log but decorated for stories */
-const pmtLog = () => {
+const pmtLog = async () => {
   let tempFilePath = null;
   let writeStream = null;
 

@@ -23,15 +23,10 @@ const formatStories = (stories) => {
   return formattedStories;
 };
 
-/** Gets the list of stories from a list of branches
- * @param branches {Array<string>} The list of branches used to update stories
- * @return {Array<Story>} The list of stories */
-const storiesFromBranches = async branches => Story.syncStoriesWithBranches(branches);
-
 /** printes stories in a list format */
 const pmtStories = async () => {
   const branchesList = await git.getBranchesList();
-  const stories = await storiesFromBranches(branchesList);
+  const stories = await Story.syncStoriesWithBranches(branchesList);
   process.stdout.write(formatStories(stories));
 };
 

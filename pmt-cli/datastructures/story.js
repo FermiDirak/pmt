@@ -94,21 +94,25 @@ Story.writeStory = async (storyAddition) => {
  * @param {Array<string>} list of branches
  * @return {Array<stories>} A list of stories */
 Story.syncStoriesWithBranches = async (branches) => {
+  const branchesSet = new Set(branches);
   const stories = await Story.readStories();
 
-  const storiesMap = stories.reduce((acc, story) => {
-    acc[story.id] = story;
+  const storiesByBranch = stories.reduce((acc, story) => {
+    if (branchesSet.has(story.id)) {
+      acc[story.id] = story;
+    }
+
     return acc;
   }, {});
 
-  branches.forEach((branch) => {
-    if (!storiesMap[branch]) {
-      storiesMap[branch] = new Story(branch, '');
+  branchesSet.forEach((branch) => {
+    if (!storiesByBranch[branch]) {
+      storiesByBranch[branch] = new Story(branch, '');
     }
   });
 
 
-  return Object.values(storiesMap);
+  return Object.values(storiesByBranch);
 };
 
 module.exports = Story;
