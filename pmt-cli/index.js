@@ -29,7 +29,7 @@ program
   ].join('\n')));
 
 program
-  .command('help', 'output documentation for PMT', { isDefault: true })
+  .command('help', 'output documentation for PMT')
   .action(() => {
     program.outputHelp();
     process.exit(0);
@@ -165,13 +165,11 @@ program
   .command('log')
   .description('logs your commit history')
   .action(async () => {
-    prettyPrint.command('log');
-
     try {
       pmtLog();
-      process.exit(0);
+      // process.exit(0);
     } catch (error) {
-      process.stdout(error);
+      process.stdout.write(error);
       process.exit(1);
     }
   });

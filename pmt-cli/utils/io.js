@@ -1,9 +1,9 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const { spawn } = require('child_process');
 const { promisify } = require('util');
 
-const pager = require('default-pager');
 const git = require('./git');
 
 const mkdtemp = promisify(fs.mkdtemp);
@@ -59,43 +59,37 @@ const readFromPMT = async (fileName) => {
  * @param dirName {string} the directory name
  * @param fileName {string} the fileName of the file location
  * @return {string} file path to temporary file */
-const makeTempFile = (dirName, fileName) => {
+const makeTempFile = async (dirName, fileName) => {
   const directory = path.join(os.tmpdir(), `${dirName}-`);
-  let tempFilePath = null;
+  const tempPath = await mkdtemp(directory);
+  const tempFilePath = path.join(tempPath, fileName);
 
-  return mkdtemp(directory)
-    .then((tempPath) => {
-      tempFilePath = path.join(tempPath, fileName);
+  if (!tempFilePath) {
+    throw new Error('temp file not created');
+  }
 
-      // make sure the content of tempFile is empty
-      return writeFile(tempFilePath, '');
-    })
-    .then(() => {
-      if (!tempFilePath) {
-        throw new Error('temp file not created');
-      }
+  await writeFile(tempFilePath, '');
 
-      return tempFilePath;
-    });
+  return tempFilePath;
 };
-
-
-/** creates a write stream to a file
- * @param filePath {string} The path of the file to open a write stream to
- * @return WriteStream a stream to add content to
- */
-const createWriteStream = (filePath) => {
-  const options = { flags: 'a' };
-
-  return fs.createWriteStream(filePath, options);
-};
-
 
 /** opens a file with user's prefered file reader (defaults to less)
  * @param filePath The path of the file to open with reader */
-const openFileInReader = (filePath) => {
-  fs.createReadStream(filePath).pipe(pager());
-};
+const openFileInReader = filePath => new Promise((resolve, reject) => {
+  const child = spawn('less', [filePath], {
+    stdio: 'inherit',
+    detached: true,
+  });
+
+  child.on('close', () => {
+    resolve();
+  });
+
+  child.on('error', (error) => {
+    reject(error);
+  });
+});
+
 
 module.exports = {
   STORIES_FILENAME,
@@ -103,6 +97,5 @@ module.exports = {
   readFromPMT,
   writeToPMT,
   makeTempFile,
-  createWriteStream,
   openFileInReader,
 };

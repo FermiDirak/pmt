@@ -22,6 +22,17 @@ const getGitDirectory = () => {
   throw new Error('not a git repository (no .git)');
 };
 
+/** Gets the repository's git history */
+const getGitHistory = async () => {
+  const gitDirectory = await getGitDirectory();
+  const repo = await Git.Repository.open(gitDirectory);
+  const firstCommitOnMaster = await repo.getMasterCommit();
+  const history = await firstCommitOnMaster.history();
+
+  return history;
+};
+
+
 /** gets a list of branches in the current repository
  * @return {Array<string>} A list of branch names */
 const getBranchesList = async () => {
@@ -64,6 +75,7 @@ const createBranch = async (branchName) => {
 
 module.exports = {
   getGitDirectory,
+  getGitHistory,
   getBranchesList,
   fetchMaster,
   createBranch,

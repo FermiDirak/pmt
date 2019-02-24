@@ -1,26 +1,13 @@
-
-const Git = require('nodegit');
+const fs = require('fs');
 const commitCount = require('git-commit-count');
 const chalk = require('chalk');
 
+const git = require('../utils/git');
 const io = require('../utils/io');
-
-
-/** leftpads content by a fixed value and culls left over values
- * @param string The string to left pad
- * @param len The size of the area to fill */
-const leftPad = (string, len) => {
-  if (string.length < len) {
-    return Array(len - string.length).fill(' ').join('') + string;
-  }
-
-  return `${string.substring(0, len - 3)}...`;
-};
-
 
 /** formats a commit in a human readable format
  * @param commit The commit to format
- * @return The formatted commit message */
+ * @return {string} The formatted commit message */
 const formatCommit = (commit) => {
   let message = '';
 
@@ -38,7 +25,7 @@ const formatCommit = (commit) => {
 
 
   message += [
-    `[${chalk.blue(sha)}]  ${leftPad(email, 24)}   ${date}`,
+    `[${chalk.blue(sha)}]  ${email.padStart(24)}   ${date}`,
     `${body}`,
     '',
   ].join('\n');
@@ -46,48 +33,33 @@ const formatCommit = (commit) => {
   return message;
 };
 
+/** pmt's equivalent for git log but decorated for stories */
+const pmtLog = async () => {
+  const tempFilePath = await io.makeTempFile('pmt', 'log');
+  const history = await git.getGitHistory();
+  const writeStream = fs.createWriteStream(tempFilePath, { options: ['a'] });
 
-/** Creates the log
- * @param history {object} NodeGit commit history
- * @param writeStream {object} The writestream object */
-const createLog = (history, writeStream) => new Promise((resolve) => {
+
   const totalCommitCount = commitCount();
   let count = 0;
 
+  // write git history to temp file
   history.on('commit', (commit) => {
     const commitMessage = formatCommit(commit);
+    count += 1;
 
     writeStream.write(commitMessage);
-    count += 1;
 
     if (count === totalCommitCount) {
       writeStream.end();
-      resolve();
     }
   });
 
   history.start();
-});
 
-
-/** pmt's equivalent for git log but decorated for stories */
-const pmtLog = async () => {
-  let tempFilePath = null;
-  let writeStream = null;
-
-  return io.makeTempFile('pmt', 'logs')
-    .then((_tempFilePath) => {
-      tempFilePath = _tempFilePath;
-      writeStream = io.createWriteStream(_tempFilePath);
-    })
-    .then(() => io.getGitDirectory())
-    .then(gitDirectory => Git.Repository.open(gitDirectory))
-    .then(repo => repo.getMasterCommit())
-    .then(firstCommitOnMaster => firstCommitOnMaster.history())
-    .then(history => createLog(history, writeStream))
-    .then(() => {
-      io.openFileInReader(tempFilePath);
-    });
+  setTimeout(() => {
+    io.openFileInReader(tempFilePath);
+  }, 100);
 };
 
 module.exports = pmtLog;
