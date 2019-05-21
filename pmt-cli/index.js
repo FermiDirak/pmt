@@ -36,8 +36,7 @@ program
   });
 
 program
-  .command('init')
-  .description('initializes pmt in the given repository')
+  .command('init', 'initializes pmt in the given repository')
   .option('-u --username', 'specify your username')
   .action(async (optionalUsername) => {
     try {
@@ -60,8 +59,7 @@ program
   });
 
 program
-  .command('config')
-  .description('displays the local config for PMT')
+  .command('config', 'displays the local config for PMT')
   .action(async () => {
     try {
       await pmtConfig();
@@ -73,8 +71,7 @@ program
   });
 
 program
-  .command('story <ticket_id> [description]')
-  .description('creates a story with the given id and description')
+  .command('story <ticket_id> [description]', 'creates a story with the given id and description')
   .action(async (ticketId, description) => {
     try {
       await pmtStory(ticketId, description);
@@ -86,8 +83,7 @@ program
   });
 
 program
-  .command('stories')
-  .description('lists out open stories')
+  .command('stories', 'lists out open stories')
   .action(() => {
     prettyPrint.command('stories', null);
 
@@ -104,8 +100,7 @@ program
 program
   .command('sub <subtask_descriptor>')
   .alias('task')
-  .alias('subtask')
-  .description('creates a subtask with a given descriptor')
+  .alias('subtask', 'creates a subtask with a given descriptor')
   .action((subtaskDescriptor) => {
     prettyPrint.command('sub', subtaskDescriptor);
 
@@ -113,8 +108,7 @@ program
   });
 
 program
-  .command('checkout <task_descriptor_regex>')
-  .description('checks out specified story')
+  .command('checkout <task_descriptor_regex>', 'checks out specified story')
   .action((taskDescriptorRegex) => {
     prettyPrint.command('checkout', taskDescriptorRegex);
 
@@ -122,8 +116,7 @@ program
   });
 
 program
-  .command('diff [task_id]')
-  .description('lists all changes made in a given task')
+  .command('diff [task_id]', 'lists all changes made in a given task')
   .option('-a --all', 'specifies whether to show diff across all tasks')
   .action((taskId, options) => {
     const { all } = options;
@@ -134,8 +127,7 @@ program
   });
 
 program
-  .command('add')
-  .description('an alias to `git add`')
+  .command('add', 'an alias to `git add`')
   .option('-a -A --all', 'specifies to add all unstaged files')
   .action(() => {
     const args = program.rawArgs.slice(3);
@@ -148,8 +140,7 @@ program
   });
 
 program
-  .command('commit [task_id] [file ...]')
-  .description('adds staged changes to commit "task_id"')
+  .command('commit [task_id] [file ...]', 'adds staged changes to commit "task_id"')
   .option('-n --new <task_descriptor>', 'creates a new task to add stage changes to')
   .action((env, file, options) => {
     const { new: taskDescriptor } = options;
@@ -162,8 +153,14 @@ program
 // MPR
 
 program
-  .command('log')
-  .description('logs your commit history')
+  .command('status', 'a pass through for git status')
+  .action(async (args) => {
+    console.log('test', args);
+    process.exit(0);
+  });
+
+program
+  .command('log', 'logs your commit history')
   .action(async () => {
     try {
       pmtLog();
