@@ -4,5 +4,19 @@ version = "0.1.0"
 authors = ["Bryan Manuele <manuelebryan@gmail.com>"]
 edition = "2018"
 license = "MIT"
+description = """
+            ██▓███   ███▄ ▄███▓▄▄▄█████▓
+            ▓██░  ██▒▓██▒▀█▀ ██▒▓  ██▒ ▓▒
+            ▓██░ ██▓▒▓██    ▓██░▒ ▓██░ ▒░
+            ▒██▄█▓▒ ▒▒██    ▒██ ░ ▓██▓ ░
+            ▒██▒ ░  ░▒██▒   ░██▒  ▒██▒ ░
+            ▒█▒░ ░  ░░ ▒░   ░  ░  ▒ ░░
+            ░▓ ░     ░  ░      ░    ░
+            ░░       ░      ░     ░
+            ░              ░
+
+    The ultimate thirst quencher and git workflow tool
+"""
 
 [dependencies]
+clap = "2.33.0"
