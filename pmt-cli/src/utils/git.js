@@ -1,82 +1,61 @@
-const fs = require('fs');
-const path = require('path');
-// const Git = require('nodegit');
+// const fs = require('fs');
+// const path = require('path');
 
 
-/** Returns the path of the .git/ directory
- * @return the .git directory path */
-const getGitDirectory = () => {
-  const currentDirectory = process.cwd();
-  const splitPath = [path.sep, ...currentDirectory.split(path.sep)];
+// /** Gets the repository's git history */
+// const getGitHistory = async () => {
+//   const gitDirectory = await getGitDirectory();
+//   const repo = await Git.Repository.open(gitDirectory);
+//   const firstCommitOnMaster = await repo.getMasterCommit();
+//   const history = await firstCommitOnMaster.history();
 
-  // recursively traverse up folder structure to find .git directory
-  while (splitPath.length >= 1) {
-    const gitDir = path.join(...splitPath, '.git');
-    if (fs.existsSync(gitDir)) {
-      return gitDir;
-    }
-
-    splitPath.pop();
-  }
-
-  throw new Error('not a git repository (no .git)');
-};
-
-/** Gets the repository's git history */
-const getGitHistory = async () => {
-  const gitDirectory = await getGitDirectory();
-  const repo = await Git.Repository.open(gitDirectory);
-  const firstCommitOnMaster = await repo.getMasterCommit();
-  const history = await firstCommitOnMaster.history();
-
-  return history;
-};
+//   return history;
+// };
 
 
-/** gets a list of branches in the current repository
- * @return {Array<string>} A list of branch names */
-const getBranchesList = async () => {
-  const gitDirectory = getGitDirectory();
-  const repository = await Git.Repository.open(gitDirectory);
-  const references = (await Git.Reference.list(repository))
-    .filter(reference => !!reference.match(/refs\/head/g));
+// /** gets a list of branches in the current repository
+//  * @return {Array<string>} A list of branch names */
+// const getBranchesList = async () => {
+//   const gitDirectory = getGitDirectory();
+//   const repository = await Git.Repository.open(gitDirectory);
+//   const references = (await Git.Reference.list(repository))
+//     .filter(reference => !!reference.match(/refs\/head/g));
 
-  return references.map((reference) => {
-    const branchName = reference.split('/');
-    return branchName.splice(2).join('/');
-  });
-};
+//   return references.map((reference) => {
+//     const branchName = reference.split('/');
+//     return branchName.splice(2).join('/');
+//   });
+// };
 
-/** fetches master branch */
-const fetchMaster = async () => {
-  const gitDirectory = await getGitDirectory();
-  const repo = await Git.Repository.open(gitDirectory);
+// /** fetches master branch */
+// const fetchMaster = async () => {
+//   const gitDirectory = await getGitDirectory();
+//   const repo = await Git.Repository.open(gitDirectory);
 
-  await repo.fetch('origin', {
-    callbacks: {
-      credentials(url, userName) {
-        return Git.Cred.sshKeyFromAgent(userName);
-      },
-    },
-  });
-};
+//   await repo.fetch('origin', {
+//     callbacks: {
+//       credentials(url, userName) {
+//         return Git.Cred.sshKeyFromAgent(userName);
+//       },
+//     },
+//   });
+// };
 
-/** Creates a branch with the given branch name based off origin HEAD
- * @param branchName The branchName to give the new branch */
-const createBranch = async (branchName) => {
-  await fetchMaster();
+// /** Creates a branch with the given branch name based off origin HEAD
+//  * @param branchName The branchName to give the new branch */
+// const createBranch = async (branchName) => {
+//   await fetchMaster();
 
-  const gitDirectory = await getGitDirectory();
-  const repo = await Git.Repository.open(gitDirectory);
-  const headCommit = await repo.getHeadCommit();
+//   const gitDirectory = await getGitDirectory();
+//   const repo = await Git.Repository.open(gitDirectory);
+//   const headCommit = await repo.getHeadCommit();
 
-  repo.createBranch(branchName, headCommit, false);
-};
+//   repo.createBranch(branchName, headCommit, false);
+// };
 
 module.exports = {
-  getGitDirectory,
-  getGitHistory,
-  getBranchesList,
-  fetchMaster,
-  createBranch,
+  // getGitHistory,
+  // getBranchesList,
+  // fetchMaster,
+  // createBranch,
 };

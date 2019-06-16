@@ -16,6 +16,8 @@ import chalk from 'chalk';
 // const pmtAdd = require('./lib/pmt-add');
 // const pmtStories = require('./lib/pmt-stories');
 
+import pmtNote from './lib/pmt-note';
+
 program
   .version('1.0.0')
   .description(chalk.cyan([
@@ -38,6 +40,20 @@ program
     program.outputHelp();
     process.exit(0);
   });
+
+program
+  .command('note <note_content>')
+  .description('create a git repo localized note')
+  .action(async (noteContent) => {
+    try {
+      await pmtNote(noteContent);
+      process.exit(0);
+    } catch(error) {
+      console.error(error);
+      process.exit(1);
+    }
+  });
+
 
 // program
 //   .command('init')
