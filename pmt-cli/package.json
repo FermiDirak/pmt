@@ -4,7 +4,8 @@
   "description": "The ultimate git workflow management tool",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec",
+    "start": "node index.js",
+    "dev": "nodemon --exec node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {

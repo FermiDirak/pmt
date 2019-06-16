@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Git = require('nodegit');
+// const Git = require('nodegit');
 
 
 /** Returns the path of the .git/ directory

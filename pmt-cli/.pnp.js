@@ -1251,12 +1251,12 @@ let packageInformationStores = new Map([
     ["0.8.2", {
       packageLocation: path.resolve(__dirname, "../../../Library/Caches/Yarn/v4/npm-optionator-0.8.2-364c5e409d3f4d6301d6c0b4c05bba50180aeb64/node_modules/optionator/"),
       packageDependencies: new Map([
-        ["prelude-ls", "1.1.2"],
         ["deep-is", "0.1.3"],
-        ["wordwrap", "1.0.0"],
-        ["type-check", "0.3.2"],
-        ["levn", "0.3.0"],
         ["fast-levenshtein", "2.0.6"],
+        ["levn", "0.3.0"],
+        ["prelude-ls", "1.1.2"],
+        ["type-check", "0.3.2"],
+        ["wordwrap", "1.0.0"],
         ["optionator", "0.8.2"],
       ]),
     }],
@@ -1269,19 +1269,19 @@ let packageInformationStores = new Map([
       ]),
     }],
   ])],
-  ["wordwrap", new Map([
-    ["1.0.0", {
-      packageLocation: path.resolve(__dirname, "../../../Library/Caches/Yarn/v4/npm-wordwrap-1.0.0-27584810891456a4171c8d0226441ade90cbcaeb/node_modules/wordwrap/"),
-      packageDependencies: new Map([
-        ["wordwrap", "1.0.0"],
-      ]),
-    }],
-  ])],
   ["fast-levenshtein", new Map([
     ["2.0.6", {
       packageLocation: path.resolve(__dirname, "../../../Library/Caches/Yarn/v4/npm-fast-levenshtein-2.0.6-3d8a5c66883a16a30ca8643e851f19baa7797917/node_modules/fast-levenshtein/"),
       packageDependencies: new Map([
         ["fast-levenshtein", "2.0.6"],
+      ]),
+    }],
+  ])],
+  ["wordwrap", new Map([
+    ["1.0.0", {
+      packageLocation: path.resolve(__dirname, "../../../Library/Caches/Yarn/v4/npm-wordwrap-1.0.0-27584810891456a4171c8d0226441ade90cbcaeb/node_modules/wordwrap/"),
+      packageDependencies: new Map([
+        ["wordwrap", "1.0.0"],
       ]),
     }],
   ])],
@@ -3673,8 +3673,8 @@ let locatorsByLocations = new Map([
   ["../../../Library/Caches/Yarn/v4/npm-natural-compare-1.4.0-4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7/node_modules/natural-compare/", {"name":"natural-compare","reference":"1.4.0"}],
   ["../../../Library/Caches/Yarn/v4/npm-optionator-0.8.2-364c5e409d3f4d6301d6c0b4c05bba50180aeb64/node_modules/optionator/", {"name":"optionator","reference":"0.8.2"}],
   ["../../../Library/Caches/Yarn/v4/npm-deep-is-0.1.3-b369d6fb5dbc13eecf524f91b070feedc357cf34/node_modules/deep-is/", {"name":"deep-is","reference":"0.1.3"}],
-  ["../../../Library/Caches/Yarn/v4/npm-wordwrap-1.0.0-27584810891456a4171c8d0226441ade90cbcaeb/node_modules/wordwrap/", {"name":"wordwrap","reference":"1.0.0"}],
   ["../../../Library/Caches/Yarn/v4/npm-fast-levenshtein-2.0.6-3d8a5c66883a16a30ca8643e851f19baa7797917/node_modules/fast-levenshtein/", {"name":"fast-levenshtein","reference":"2.0.6"}],
+  ["../../../Library/Caches/Yarn/v4/npm-wordwrap-1.0.0-27584810891456a4171c8d0226441ade90cbcaeb/node_modules/wordwrap/", {"name":"wordwrap","reference":"1.0.0"}],
   ["../../../Library/Caches/Yarn/v4/npm-path-is-inside-1.0.2-365417dede44430d1c11af61027facf074bdfc53/node_modules/path-is-inside/", {"name":"path-is-inside","reference":"1.0.2"}],
   ["../../../Library/Caches/Yarn/v4/npm-progress-2.0.3-7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8/node_modules/progress/", {"name":"progress","reference":"2.0.3"}],
   ["../../../Library/Caches/Yarn/v4/npm-regexpp-2.0.1-8d19d31cf632482b589049f8281f93dbcba4d07f/node_modules/regexpp/", {"name":"regexpp","reference":"2.0.1"}],
