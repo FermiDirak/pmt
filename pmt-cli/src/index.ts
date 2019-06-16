@@ -17,6 +17,7 @@ import chalk from 'chalk';
 // const pmtStories = require('./lib/pmt-stories');
 
 import pmtNote from './lib/pmt-note';
+import pmtNotes from './lib/pmt-notes';
 
 program
   .version('1.0.0')
@@ -47,6 +48,19 @@ program
   .action(async (noteContent) => {
     try {
       await pmtNote(noteContent);
+      process.exit(0);
+    } catch(error) {
+      console.error(error);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('notes')
+  .description('displays git repo notes')
+  .action(async () => {
+    try {
+      await pmtNotes();
       process.exit(0);
     } catch(error) {
       console.error(error);
