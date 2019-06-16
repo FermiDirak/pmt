@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const inquirer = require('inquirer');
-const chalk = require('chalk');
-const prettyPrint = require('./utils/prettyPrint');
+import program from 'commander';
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+
+// const program = require('commander');
+// const inquirer = require('inquirer');
+// const chalk = require('chalk');
+// const prettyPrint = require('./utils/prettyPrint');
 
 // const pmtInit = require('./lib/pmt-init');
 // const pmtConfig = require('./lib/pmt-config');
