@@ -11,7 +11,7 @@ const access = promisify(fs.access);
 /** Creates an empty pmt store if one doesn't already exist
  * @param storeName The file to create if DNE
  * @return the filepath to the pmt file */
-const softInitializeStore = async (storeName: string): Promise<string> => {
+async function softInitializeStore(storeName: string): Promise<string> {
   const gitDirectory = await getGitDirectory();
   const folderDirectory = path.join(gitDirectory, PMT_DIRECTORY);
   const filePath = path.join(folderDirectory, storeName);
@@ -32,3 +32,5 @@ const softInitializeStore = async (storeName: string): Promise<string> => {
 
   return filePath;
 };
+
+export default softInitializeStore;

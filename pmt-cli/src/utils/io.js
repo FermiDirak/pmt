@@ -4,56 +4,56 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const { promisify } = require('util');
 
-const git = require('./git');
+// const git = require('./git');
 
 const mkdtemp = promisify(fs.mkdtemp);
 const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
-const mkdir = promisify(fs.mkdir);
-const access = promisify(fs.access);
+// const readFile = promisify(fs.readFile);
+// const mkdir = promisify(fs.mkdir);
+// const access = promisify(fs.access);
 
-const PMT_DIRECTORY = 'pmt';
+// const PMT_DIRECTORY = 'pmt';
 const STORIES_FILENAME = 'stories.json';
 const USER_FILENAME = 'user.json';
 
-/** Creates an empty pmt file if one doesn't already exist
- * @param {string} fileName The file to create if DNE
- * @return {string} the filepath to the pmt file */
-const softInitializePMTFile = async (fileName) => {
-  const gitDirectory = await git.getGitDirectory();
-  const folderDirectory = path.join(gitDirectory, PMT_DIRECTORY);
-  const filePath = path.join(folderDirectory, fileName);
+// /** Creates an empty pmt file if one doesn't already exist
+//  * @param {string} fileName The file to create if DNE
+//  * @return {string} the filepath to the pmt file */
+// const softInitializePMTFile = async (fileName) => {
+//   const gitDirectory = await git.getGitDirectory();
+//   const folderDirectory = path.join(gitDirectory, PMT_DIRECTORY);
+//   const filePath = path.join(folderDirectory, fileName);
 
-  try {
-    await access(folderDirectory);
-  } catch (error) {
-    await mkdir(folderDirectory);
-  }
+//   try {
+//     await access(folderDirectory);
+//   } catch (error) {
+//     await mkdir(folderDirectory);
+//   }
 
-  try {
-    await access(filePath);
-  } catch (error) {
-    await writeFile(filePath, '');
-  }
+//   try {
+//     await access(filePath);
+//   } catch (error) {
+//     await writeFile(filePath, '');
+//   }
 
-  return filePath;
-};
+//   return filePath;
+// };
 
-/** Writes content to the fileName in the pmt directory
- * @param {string} fileName The name of the file to write content to
- * @param {string} content The content to write to file */
-const writeToPMT = async (fileName, content) => {
-  const filePath = await softInitializePMTFile(fileName);
-  return writeFile(filePath, content);
-};
+// /** Writes content to the fileName in the pmt directory
+//  * @param {string} fileName The name of the file to write content to
+//  * @param {string} content The content to write to file */
+// const writeToPMT = async (fileName, content) => {
+//   const filePath = await softInitializePMTFile(fileName);
+//   return writeFile(filePath, content);
+// };
 
-/** Reads content form pmt file
- * @param {string} fileName The file to read content from
- * @return {string} the content of the file */
-const readFromPMT = async (fileName) => {
-  const filePath = await softInitializePMTFile(fileName);
-  return readFile(filePath, 'utf8');
-};
+// /** Reads content form pmt file
+//  * @param {string} fileName The file to read content from
+//  * @return {string} the content of the file */
+// const readFromPMT = async (fileName) => {
+//   const filePath = await softInitializePMTFile(fileName);
+//   return readFile(filePath, 'utf8');
+// };
 
 /** Creates a temporary file in /tmp and returns the temporary file location
  * @param dirName {string} the directory name
@@ -94,8 +94,8 @@ const openFileInReader = filePath => new Promise((resolve, reject) => {
 module.exports = {
   STORIES_FILENAME,
   USER_FILENAME,
-  readFromPMT,
-  writeToPMT,
+  // readFromPMT,
+  // writeToPMT,
   makeTempFile,
   openFileInReader,
 };
