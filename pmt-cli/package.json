@@ -10,6 +10,9 @@
   "bin": {
     "pmt": "./index.js"
   },
+  "installConfig": {
+    "pnp": true
+  },
   "preferGlobal": true,
   "repository": {
     "type": "git",
@@ -34,12 +37,12 @@
     "default-pager": "^1.1.0",
     "git-commit-count": "^1.1.3",
     "inquirer": "^6.2.1",
-    "nodegit": "^0.23.0"
+    "simple-git": "1.115.0"
   },
   "devDependencies": {
     "eslint": "^5.9.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.19.1"
   }
 }
