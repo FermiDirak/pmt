@@ -2,14 +2,14 @@
   "name": "pmt-cli",
   "version": "1.0.0",
   "description": "The ultimate git workflow management tool",
-  "main": "index.ts",
+  "main": "build/index.ts",
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon --exec ts-node ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "pmt": "./index.ts"
+    "pmt": "./build/index.js"
   },
   "preferGlobal": true,
   "repository": {
