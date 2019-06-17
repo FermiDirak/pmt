@@ -17,6 +17,9 @@ description = """
 
     The ultimate thirst quencher and git workflow tool
 """
+publish = true
+homepage = "https://github.com/fermidirak/pmt"
+repository = "https://github.com/fermidirak/pmt"
 
 [dependencies]
 clap = "2.33.0"
