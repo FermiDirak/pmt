@@ -1,4 +1,3 @@
-import fs from 'fs';
 import chalk from 'chalk';
 import {createNote, writeNote} from '../datastructures/note'
 

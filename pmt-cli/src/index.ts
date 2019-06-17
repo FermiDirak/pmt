@@ -16,8 +16,10 @@ import chalk from 'chalk';
 // const pmtAdd = require('./lib/pmt-add');
 // const pmtStories = require('./lib/pmt-stories');
 
+import pmtArbitrary from './lib/pmt-arbitrary';
 import pmtNote from './lib/pmt-note';
 import pmtNotes from './lib/pmt-notes';
+
 
 program
   .version('1.0.0')
@@ -39,6 +41,8 @@ program
   .command('help', 'output documentation for PMT')
   .action(() => {
     program.outputHelp();
+    //add extra line for running abitrary git commands
+    process.stdout.write('  ...                  Aliases git and runs any git command\n');
     process.exit(0);
   });
 
@@ -67,6 +71,8 @@ program
       process.exit(1);
     }
   });
+
+
 
 
 // program
@@ -208,4 +214,21 @@ program
 //     }
 //   });
 
-program.parse(process.argv);
+const commands = program.commands.reduce((acc: String[], curr: any) => {
+  return [...acc, curr._name];
+}, []);
+
+if (commands.includes(process.argv[2])) {
+  program.parse(process.argv);
+} else {
+  pmtArbitrary(process.argv.slice(2))
+    .then(() => {
+      process.exit(0);
+    })
+    .catch(error => {
+      console.error(error);
+      process.exit(1);
+    })
+}
+
+
