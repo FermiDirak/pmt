@@ -3,8 +3,6 @@ extern crate clap;
 use std::process;
 use clap::{App, SubCommand, crate_version, crate_description, crate_authors};
 
-mod app;
-
 // struct Cli {
 //     pattern: String,
 //     path: std::path::PathBuf,
@@ -22,7 +20,12 @@ fn main() {
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("note") {
-        println!("breh");
+        println!("ran pmt note");
+        process::exit(0);
+    }
+
+    if let Some(_matches) = matches.subcommand_matches("notes") {
+        println!("ran pmt notes");
         process::exit(0);
     }
 
