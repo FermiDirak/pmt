@@ -1,5 +1,8 @@
 extern crate clap;
 
+use std::process;
+use clap::{App, SubCommand, crate_version, crate_description, crate_authors};
+
 mod app;
 
 // struct Cli {
@@ -8,8 +11,20 @@ mod app;
 // }
 
 fn main() {
-    let matches = app::build()
+    let matches = App::new("pmt")
+        .version(crate_version!())
+        .about(crate_description!())
+        .author(crate_authors!())
+        .subcommand(SubCommand::with_name("note")
+            .about("takes a note localized within the current git repo"))
+        .subcommand(SubCommand::with_name("notes")
+            .about("lists out notes in the repo"))
         .get_matches();
+
+    if let Some(_matches) = matches.subcommand_matches("note") {
+        println!("breh");
+        process::exit(0);
+    }
 
     println!("test: {:?}", matches);
 
