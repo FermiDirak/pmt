@@ -1,6 +1,7 @@
 extern crate clap;
 
 mod pmt_note;
+mod pmt_notes;
 
 use std::process;
 use std::env;
@@ -18,6 +19,7 @@ use clap::{
 
 
 use pmt_note::pmt_note;
+use pmt_notes::pmt_notes;
 
 fn main() {
     let matches = App::new("pmt")
@@ -42,7 +44,7 @@ fn main() {
     }
 
     if let Some(_matches) = matches.subcommand_matches("notes") {
-        println!("ran pmt notes");
+        pmt_notes();
         process::exit(0);
     }
 
