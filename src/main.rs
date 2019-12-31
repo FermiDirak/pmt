@@ -17,7 +17,6 @@ use clap::{
     crate_authors
 };
 
-
 use pmt_note::pmt_note;
 use pmt_notes::pmt_notes;
 
