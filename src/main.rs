@@ -3,19 +3,11 @@ extern crate clap;
 mod pmt_note;
 mod pmt_notes;
 
-use std::process;
 use std::env;
+use std::process;
 use std::process::Command;
 
-use clap::{
-    App,
-    SubCommand,
-    Arg,
-    AppSettings,
-    crate_version,
-    crate_description,
-    crate_authors
-};
+use clap::{crate_authors, crate_description, crate_version, App, AppSettings, Arg, SubCommand};
 
 use pmt_note::pmt_note;
 use pmt_notes::pmt_notes;
@@ -27,14 +19,15 @@ fn main() {
         .author(crate_authors!())
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .setting(AppSettings::AllowExternalSubcommands)
-        .subcommand(SubCommand::with_name("note")
-            .about("takes a note localized within the current git repo")
-            .arg(Arg::from_usage("<note> the message note you would like to record.")
-                .required(true)
-            )
+        .subcommand(
+            SubCommand::with_name("note")
+                .about("takes a note localized within the current git repo")
+                .arg(
+                    Arg::from_usage("<note> the message note you would like to record.")
+                        .required(true),
+                ),
         )
-        .subcommand(SubCommand::with_name("notes")
-            .about("lists out notes in the repo"))
+        .subcommand(SubCommand::with_name("notes").about("lists out notes in the repo"))
         .get_matches();
 
     if let Some(_matches) = matches.subcommand_matches("note") {

@@ -2,7 +2,7 @@
 mod notes_store;
 
 pub fn pmt_notes() {
-  let notes = notes_store::read_notes_from_store();
+    let notes = notes_store::read_notes_from_store();
 
-  println!("{:?}", notes);
+    println!("{:?}", notes);
 }
